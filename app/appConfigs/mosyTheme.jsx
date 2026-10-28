@@ -8,7 +8,7 @@ const commonRoot = ""; // Update this path if needed
 const mosyThemeConfigs = {
   // App Identity
   mosyAppName: "Buffer",
-  mosySystemName: "bufferv1",
+  mosySystemName: "buffer",
   mosyAppLogo: logo.src,
   mosyAppLogoStyle: {
     width: "auto",
