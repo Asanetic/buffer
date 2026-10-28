@@ -1,0 +1,2 @@
+wallets_transfers_identifier,date,amount,category,ref_no,wallet_id
+"#NOTE: wallets_transfers_identifier = a unique value to identify this record and its related data in the system, e.g. account_number or registration number. Leave blank to auto-generate. Delete this row before uploading.",,,,,

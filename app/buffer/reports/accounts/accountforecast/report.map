@@ -1,0 +1,28 @@
+report AccountForecast "Account Transaction Forecast"
+  by month|year
+  date date
+  entity accounts_transaction_forecast
+  role view_reports
+  currency KES
+  cache 60
+  maxrange 1200
+
+  filter account_id = account_id
+
+  money_in = sum accounts_money_in.amount "Money In" money
+  money_out = sum accounts_money_out.amount "Money Out" money
+  transfers_in = sum accounts_transfers.amount where direction=IN "Transfers In" money
+  transfers_out = sum accounts_transfers.amount where direction=OUT "Transfers Out" money
+
+  net_movement = money_in - money_out + transfers_in - transfers_out "Net Movement" money
+
+  forecast money_in next 12
+  forecast money_out next 12
+  forecast transfers_in next 12
+  forecast transfers_out next 12
+
+  headline {label}: {money_in} received, {money_out} spent, {net_movement} net movement.
+
+  remark money_in == 0 | watch | No money received | No money in was recorded for {label}.
+  remark money_out > money_in | watch | Spending exceeds income | Money out exceeded money in for {label}.
+  remark true | neutral | Account activity | Historical figures are actual transactions. Forecasts estimate future activity from historical trends.

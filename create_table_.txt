@@ -1,0 +1,166 @@
+//=========================================================
+// ACCOUNTS LIST TABLE
+//=========================================================
+
+$accounts_list_table_script = "
+`primkey` int(11) PRIMARY KEY AUTO_INCREMENT,
+`record_id` varchar(100) NOT NULL,
+`account_name` varchar(255) NOT NULL,
+`account_type` varchar(100),
+`account_code` varchar(100),
+`account_number` varchar(100),
+`remark` text,
+`hive_site_id` varchar(100),
+`hive_site_name` varchar(255)
+";
+
+$accounts_list_table = 'accounts_list';
+
+create_table($mysqliconn, $dbname, $accounts_list_table, $accounts_list_table_script);
+
+
+//=========================================================
+// ACCOUNTS TRANSFERS TABLE
+//=========================================================
+
+$accounts_transfers_table_script = "
+`primkey` int(11) PRIMARY KEY AUTO_INCREMENT,
+`record_id` varchar(100) NOT NULL,
+`date` datetime DEFAULT CURRENT_TIMESTAMP,
+`amount` decimal(15,2) NOT NULL DEFAULT 0.00,
+`category` varchar(100),
+`ref_no` varchar(100),
+`account_id` varchar(100) NOT NULL,
+`hive_site_id` varchar(100),
+`hive_site_name` varchar(255)
+";
+
+$accounts_transfers_table = 'accounts_transfers';
+
+create_table($mysqliconn, $dbname, $accounts_transfers_table, $accounts_transfers_table_script);
+
+
+//=========================================================
+// ACCOUNTS MONEY IN TABLE
+//=========================================================
+
+$accounts_money_in_table_script = "
+`primkey` int(11) PRIMARY KEY AUTO_INCREMENT,
+`record_id` varchar(100) NOT NULL,
+`date` datetime DEFAULT CURRENT_TIMESTAMP,
+`amount` decimal(15,2) NOT NULL DEFAULT 0.00,
+`category` varchar(100),
+`ref_no` varchar(100),
+`account_id` varchar(100) NOT NULL,
+`hive_site_id` varchar(100),
+`hive_site_name` varchar(255)
+";
+
+$accounts_money_in_table = 'accounts_money_in';
+
+create_table($mysqliconn, $dbname, $accounts_money_in_table, $accounts_money_in_table_script);
+
+
+//=========================================================
+// ACCOUNTS MONEY OUT TABLE
+//=========================================================
+
+$accounts_money_out_table_script = "
+`primkey` int(11) PRIMARY KEY AUTO_INCREMENT,
+`record_id` varchar(100) NOT NULL,
+`date` datetime DEFAULT CURRENT_TIMESTAMP,
+`amount` decimal(15,2) NOT NULL DEFAULT 0.00,
+`category` varchar(100),
+`ref_no` varchar(100),
+`account_id` varchar(100) NOT NULL,
+`hive_site_id` varchar(100),
+`hive_site_name` varchar(255)
+";
+
+$accounts_money_out_table = 'accounts_money_out';
+
+create_table($mysqliconn, $dbname, $accounts_money_out_table, $accounts_money_out_table_script);
+
+
+//=========================================================
+// WALLETS LIST TABLE
+//=========================================================
+
+$wallets_list_table_script = "
+`primkey` int(11) PRIMARY KEY AUTO_INCREMENT,
+`record_id` varchar(100) NOT NULL,
+`wallet_name` varchar(255) NOT NULL,
+`wallet_type` varchar(100),
+`wallet_code` varchar(100),
+`wallet_number` varchar(100),
+`remark` text,
+`hive_site_id` varchar(100),
+`hive_site_name` varchar(255)
+";
+
+$wallets_list_table = 'wallets_list';
+
+create_table($mysqliconn, $dbname, $wallets_list_table, $wallets_list_table_script);
+
+
+//=========================================================
+// WALLETS TRANSFERS TABLE
+//=========================================================
+
+$wallets_transfers_table_script = "
+`primkey` int(11) PRIMARY KEY AUTO_INCREMENT,
+`record_id` varchar(100) NOT NULL,
+`date` datetime DEFAULT CURRENT_TIMESTAMP,
+`amount` decimal(15,2) NOT NULL DEFAULT 0.00,
+`category` varchar(100),
+`ref_no` varchar(100),
+`wallet_id` varchar(100) NOT NULL,
+`hive_site_id` varchar(100),
+`hive_site_name` varchar(255)
+";
+
+$wallets_transfers_table = 'wallets_transfers';
+
+create_table($mysqliconn, $dbname, $wallets_transfers_table, $wallets_transfers_table_script);
+
+
+//=========================================================
+// WALLETS MONEY IN TABLE
+//=========================================================
+
+$wallets_money_in_table_script = "
+`primkey` int(11) PRIMARY KEY AUTO_INCREMENT,
+`record_id` varchar(100) NOT NULL,
+`date` datetime DEFAULT CURRENT_TIMESTAMP,
+`amount` decimal(15,2) NOT NULL DEFAULT 0.00,
+`category` varchar(100),
+`ref_no` varchar(100),
+`wallet_id` varchar(100) NOT NULL,
+`hive_site_id` varchar(100),
+`hive_site_name` varchar(255)
+";
+
+$wallets_money_in_table = 'wallets_money_in';
+
+create_table($mysqliconn, $dbname, $wallets_money_in_table, $wallets_money_in_table_script);
+
+
+//=========================================================
+// WALLETS MONEY OUT TABLE
+//=========================================================
+
+$wallets_money_out_table_script = "
+`primkey` int(11) PRIMARY KEY AUTO_INCREMENT,
+`record_id` varchar(100) NOT NULL,
+`date` datetime DEFAULT CURRENT_TIMESTAMP,
+`amount` decimal(15,2) NOT NULL DEFAULT 0.00,
+`category` varchar(100),
+`ref_no` varchar(100),
+`wallet_id` varchar(100) NOT NULL,
+`hive_site_id` varchar(100),
+`hive_site_name` varchar(255)
+";
+
+$wallets_money_out_table = 'wallets_money_out';
+
+create_table($mysqliconn, $dbname, $wallets_money_out_table, $wallets_money_out_table_script);

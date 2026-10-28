@@ -1,0 +1,9 @@
+accounts_list_identifier,account_name,account_type,account_code,account_number,remark
+ACC-MPESA-PERSONAL,Personal M-Pesa,Mobile Money,ACC001,,Personal mobile money account
+ACC-MPESA-BUSINESS,Business M-Pesa,Mobile Money,ACC002,,Mobile money used for business collections and payments
+ACC-BANK-PERSONAL,Personal Bank Account,Bank,ACC003,,Personal bank account
+ACC-BANK-BUSINESS,Business Bank Account,Bank,ACC004,,Bank account used for business transactions
+ACC-CASH-PERSONAL,Personal Cash,Cash,ACC005,,Physical cash held for personal use
+ACC-SHOP-CASH,Shop Cash Till,Cash,ACC006,,Cash held at the retail shop
+ACC-SACCO-SAVINGS,SACCO Savings,SACCO,ACC007,,Savings held with a SACCO
+ACC-RESERVE,Separate Savings Account,Savings,ACC008,,Separate account for protected savings and reserves

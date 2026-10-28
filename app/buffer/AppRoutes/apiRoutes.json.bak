@@ -1,0 +1,188 @@
+{
+  "smartapi": {
+    "base": "/api/buffer/smartapi"
+  },
+  "dashboard": {
+    "main": "/api/buffer/dashboard/main"
+  },
+  "smartmessages": {
+    "base": "/api/buffer/messages/list",
+    "delete": "/api/buffer/messages/list/delete",
+    "import": "/api/buffer/messages/import"
+  },
+  "messagetemplates": {
+    "base": "/api/buffer/messagetemplates/list",
+    "delete": "/api/buffer/messagetemplates/list/delete",
+    "import": "/api/buffer/messagetemplates/import"
+  },
+  "clients": {
+    "base": "/api/buffer/clients/list",
+    "delete": "/api/buffer/clients/list/delete",
+    "import": "/api/buffer/clients/import"
+  },
+  "loans": {
+    "base": "/api/buffer/loans/list",
+    "delete": "/api/buffer/loans/list/delete",
+    "import": "/api/buffer/loans/import"
+  },
+  "deviceslist": {
+    "base": "/api/buffer/deviceslist/list",
+    "delete": "/api/buffer/deviceslist/list/delete",
+    "import": "/api/buffer/deviceslist/import"
+  },
+  "devicesallocations": {
+    "base": "/api/buffer/devicesallocations/list",
+    "delete": "/api/buffer/devicesallocations/list/delete",
+    "import": "/api/buffer/devicesallocations/import"
+  },
+  "loansplans": {
+    "base": "/api/buffer/loansplans/list",
+    "delete": "/api/buffer/loansplans/list/delete",
+    "import": "/api/buffer/loansplans/import"
+  },
+  "loansrepayments": {
+    "base": "/api/buffer/loansrepayments/list",
+    "delete": "/api/buffer/loansrepayments/list/delete",
+    "import": "/api/buffer/loansrepayments/import"
+  },
+  "paytriggerlogs": {
+    "base": "/api/buffer/paytriggerlogs/list",
+    "delete": "/api/buffer/paytriggerlogs/list/delete",
+    "import": "/api/buffer/paytriggerlogs/import"
+  },
+  "paytriggersettings": {
+    "base": "/api/buffer/paytriggersettings/list",
+    "delete": "/api/buffer/paytriggersettings/list/delete",
+    "import": "/api/buffer/paytriggersettings/import"
+  },
+  "remindershistory": {
+    "base": "/api/buffer/remindershistory/list",
+    "delete": "/api/buffer/remindershistory/list/delete",
+    "import": "/api/buffer/remindershistory/import"
+  },
+  "reminderstemplates": {
+    "base": "/api/buffer/reminderstemplates/list",
+    "delete": "/api/buffer/reminderstemplates/list/delete",
+    "import": "/api/buffer/reminderstemplates/import"
+  },
+  "systemsettings": {
+    "base": "/api/buffer/systemsettings/list",
+    "delete": "/api/buffer/systemsettings/list/delete",
+    "import": "/api/buffer/systemsettings/import"
+  },
+  "loansperformance": {
+    "base": "/api/buffer/reports/loans/performance/list"
+  },
+  "collectionsoverdue": {
+    "base": "/api/buffer/reports/collections/overdue/list"
+  },
+  "collectionscontracts": {
+    "base": "/api/buffer/reports/collections/contracts/list"
+  },
+  "devicesstock": {
+    "base": "/api/buffer/reports/devices/stock/list"
+  },
+  "financeprofit": {
+    "base": "/api/buffer/reports/finance/profit/list"
+  },
+  "collectionsrisk": {
+    "base": "/api/buffer/reports/collections/risk/list"
+  },
+  "collectionsupcoming": {
+    "base": "/api/buffer/reports/collections/upcoming/list"
+  },
+  "clientsgrowth": {
+    "base": "/api/buffer/reports/clients/growth/list"
+  },
+  "loansapplications": {
+    "base": "/api/buffer/reports/loans/applications/list"
+  },
+  "loansloans": {
+    "base": "/api/buffer/reports/loans/loans/list"
+  },
+  "repaymentsrepayments": {
+    "base": "/api/buffer/reports/repayments/repayments/list"
+  },
+  "loansmonthlyloans": {
+    "base": "/api/buffer/reports/loans/monthlyloans/list"
+  },
+  "devicesdevicemodels": {
+    "base": "/api/buffer/reports/devices/devicemodels/list"
+  },
+  "clientsclientrepayments": {
+    "base": "/api/buffer/reports/clients/clientrepayments/list"
+  },
+  "repaymentsrepaymentbyloan": {
+    "base": "/api/buffer/reports/repayments/repaymentbyloan/list"
+  },
+  "loanslendingforecast": {
+    "base": "/api/buffer/reports/loans/lendingforecast/list"
+  },
+  "accountslist": {
+    "base": "/api/buffer/accountslist/list",
+    "delete": "/api/buffer/accountslist/list/delete",
+    "import": "/api/buffer/accountslist/import"
+  },
+  "walletslist": {
+    "base": "/api/buffer/walletslist/list",
+    "delete": "/api/buffer/walletslist/list/delete",
+    "import": "/api/buffer/walletslist/import"
+  },
+  "accountsmoneyin": {
+    "base": "/api/buffer/accountsmoneyin/list",
+    "delete": "/api/buffer/accountsmoneyin/list/delete",
+    "import": "/api/buffer/accountsmoneyin/import"
+  },
+  "accountsmoneyout": {
+    "base": "/api/buffer/accountsmoneyout/list",
+    "delete": "/api/buffer/accountsmoneyout/list/delete",
+    "import": "/api/buffer/accountsmoneyout/import"
+  },
+  "accountstransfers": {
+    "base": "/api/buffer/accountstransfers/list",
+    "delete": "/api/buffer/accountstransfers/list/delete",
+    "import": "/api/buffer/accountstransfers/import"
+  },
+  "walletsmoneyin": {
+    "base": "/api/buffer/walletsmoneyin/list",
+    "delete": "/api/buffer/walletsmoneyin/list/delete",
+    "import": "/api/buffer/walletsmoneyin/import"
+  },
+  "walletsmoneyout": {
+    "base": "/api/buffer/walletsmoneyout/list",
+    "delete": "/api/buffer/walletsmoneyout/list/delete",
+    "import": "/api/buffer/walletsmoneyout/import"
+  },
+  "walletstransfers": {
+    "base": "/api/buffer/walletstransfers/list",
+    "delete": "/api/buffer/walletstransfers/list/delete",
+    "import": "/api/buffer/walletstransfers/import"
+  },
+  "accountsaccountbalances": {
+    "base": "/api/buffer/reports/accounts/accountbalances/list"
+  },
+  "walletswalletbalances": {
+    "base": "/api/buffer/reports/wallets/walletbalances/list"
+  },
+  "accountsaccountmoneyin": {
+    "base": "/api/buffer/reports/accounts/accountmoneyin/list"
+  },
+  "accountsaccountmoneyout": {
+    "base": "/api/buffer/reports/accounts/accountmoneyout/list"
+  },
+  "accountsaccounttransfers": {
+    "base": "/api/buffer/reports/accounts/accounttransfers/list"
+  },
+  "walletswalletmoneyin": {
+    "base": "/api/buffer/reports/wallets/walletmoneyin/list"
+  },
+  "walletswalletmoneyout": {
+    "base": "/api/buffer/reports/wallets/walletmoneyout/list"
+  },
+  "walletswallettransfers": {
+    "base": "/api/buffer/reports/wallets/wallettransfers/list"
+  },
+  "accountsaccountforecast": {
+    "base": "/api/buffer/reports/accounts/accountforecast/list"
+  }
+}

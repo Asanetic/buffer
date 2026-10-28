@@ -1,0 +1,70 @@
+RELATIONS REPORT — 10/28/2026, 7:13:08 AM — app: buffer
+Modules found: 9   FK links found: 6
+
+LINKED (6)
+  walletsmoneyin.wallet_id -> wallets_list
+     walletsmoneyin: view_walletsmoneyin_walletslist_profile
+     walletslist: view_walletslist_walletsmoneyin
+     walletslist: add_walletslist_walletsmoneyin
+     walletsmoneyin: filter_walletsmoneyin_walletslist
+  accountsmoneyin.account_id -> accounts_list
+     accountsmoneyin: view_accountsmoneyin_accountslist_profile
+     accountslist: view_accountslist_accountsmoneyin
+     accountslist: add_accountslist_accountsmoneyin
+     accountsmoneyin: filter_accountsmoneyin_accountslist
+  walletsmoneyout.wallet_id -> wallets_list
+     walletsmoneyout: view_walletsmoneyout_walletslist_profile
+     walletslist: view_walletslist_walletsmoneyout
+     walletslist: add_walletslist_walletsmoneyout
+     walletsmoneyout: filter_walletsmoneyout_walletslist
+  accountsmoneyout.account_id -> accounts_list
+     accountsmoneyout: view_accountsmoneyout_accountslist_profile
+     accountslist: view_accountslist_accountsmoneyout
+     accountslist: add_accountslist_accountsmoneyout
+     accountsmoneyout: filter_accountsmoneyout_accountslist
+  walletstransfers.wallet_id -> wallets_list
+     walletstransfers: view_walletstransfers_walletslist_profile
+     walletslist: view_walletslist_walletstransfers
+     walletslist: add_walletslist_walletstransfers
+     walletstransfers: filter_walletstransfers_walletslist
+  accountstransfers.account_id -> accounts_list
+     accountstransfers: view_accountstransfers_accountslist_profile
+     accountslist: view_accountslist_accountstransfers
+     accountslist: add_accountslist_accountstransfers
+     accountstransfers: filter_accountstransfers_accountslist
+
+PENDING / PARTIAL (0)
+  (none)
+
+COLUMN FILTERS (22)   — date columns and status/type/category-like columns
+  systemusers.regdate [date]   systemusers: filter_systemusers_regdate
+  systemusers.user_gender [tag]   systemusers: filter_systemusers_user_gender
+  systemusers.last_seen [date]   systemusers: filter_systemusers_last_seen
+  systemusers.token_status [tag]   systemusers: filter_systemusers_token_status
+  systemusers.user_role [tag]   systemusers: filter_systemusers_user_role
+  systemusers.account_status [tag]   systemusers: filter_systemusers_account_status
+  walletslist.wallet_type [tag]   walletslist: filter_walletslist_wallet_type
+  accountslist.account_type [tag]   accountslist: filter_accountslist_account_type
+  walletsmoneyin.date [date]   walletsmoneyin: filter_walletsmoneyin_date
+  walletsmoneyin.category [tag]   walletsmoneyin: filter_walletsmoneyin_category
+  accountsmoneyin.date [date]   accountsmoneyin: filter_accountsmoneyin_date
+  accountsmoneyin.category [tag]   accountsmoneyin: filter_accountsmoneyin_category
+  walletsmoneyout.date [date]   walletsmoneyout: filter_walletsmoneyout_date
+  walletsmoneyout.category [tag]   walletsmoneyout: filter_walletsmoneyout_category
+  accountsmoneyout.date [date]   accountsmoneyout: filter_accountsmoneyout_date
+  accountsmoneyout.category [tag]   accountsmoneyout: filter_accountsmoneyout_category
+  walletstransfers.date [date]   walletstransfers: filter_walletstransfers_date
+  walletstransfers.category [tag]   walletstransfers: filter_walletstransfers_category
+  walletstransfers.direction [tag]   walletstransfers: filter_walletstransfers_direction
+  accountstransfers.date [date]   accountstransfers: filter_accountstransfers_date
+  accountstransfers.category [tag]   accountstransfers: filter_accountstransfers_category
+  accountstransfers.direction [tag]   accountstransfers: filter_accountstransfers_direction
+
+ROW MENU LIMIT (5 per module) — these are on the profile page only, not in the row dropdown
+  walletslist: add_walletslist_walletstransfers
+  accountslist: add_accountslist_accountstransfers
+
+FILES CHANGED (3) — previous copy of each is in <module>/_recycled/
+  app/buffer/systemusers/logicControl/actionsRegistry.js
+  app/buffer/systemusers/SystemusersSchema.js
+  app/buffer/accountslist/AccountslistSchema.js

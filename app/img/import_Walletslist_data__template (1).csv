@@ -1,0 +1,2 @@
+wallets_list_identifier,wallet_name,wallet_type,wallet_code,wallet_number,remark,target_collection
+"#NOTE: wallets_list_identifier = a unique value to identify this record and its related data in the system, e.g. account_number or registration number. Leave blank to auto-generate. Delete this row before uploading.",,,,,,

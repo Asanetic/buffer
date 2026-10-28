@@ -1,0 +1,2 @@
+accounts_list_identifier,account_name,account_type,account_code,account_number,remark
+"#NOTE: accounts_list_identifier = a unique value to identify this record and its related data in the system, e.g. account_number or registration number. Leave blank to auto-generate. Delete this row before uploading.",,,,,

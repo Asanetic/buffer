@@ -1,0 +1,32 @@
+//Table name : accounts_list
+
+// columns : "primkey" , "record_id" , "account_name" , "account_type" , "account_code" , "account_number" , "remark" , "hive_site_id" , "hive_site_name" , 
+
+//Table name : accounts_money_in
+
+// columns : "primkey" , "record_id" , "date" , "amount" , "category" , "ref_no" , "account_id" , "hive_site_id" , "hive_site_name" , 
+
+//Table name : accounts_money_out
+
+// columns : "primkey" , "record_id" , "date" , "amount" , "category" , "ref_no" , "account_id" , "hive_site_id" , "hive_site_name" , 
+
+//Table name : accounts_transfers
+
+// columns : "primkey" , "record_id" , "date" , "amount" , "category" , "ref_no" , "account_id" , "hive_site_id" , "hive_site_name" , 
+
+//Table name : wallets_list
+
+// columns : "primkey" , "record_id" , "wallet_name" , "wallet_type" , "wallet_code" , "wallet_number" , "remark" , "hive_site_id" , "hive_site_name" , 
+
+//Table name : wallets_money_in
+
+// columns : "primkey" , "record_id" , "date" , "amount" , "category" , "ref_no" , "wallet_id" , "hive_site_id" , "hive_site_name" , 
+
+//Table name : wallets_money_out
+
+// columns : "primkey" , "record_id" , "date" , "amount" , "category" , "ref_no" , "wallet_id" , "hive_site_id" , "hive_site_name" , 
+
+//Table name : wallets_transfers
+
+// columns : "primkey" , "record_id" , "date" , "amount" , "category" , "ref_no" , "wallet_id" , "hive_site_id" , "hive_site_name" , 
+

@@ -1,0 +1,248 @@
+report AccountBalances "Account Balances"
+  nest accounts
+  by dimension
+  date date
+  entity accounts_account_balances
+  role view_reports
+  currency KES
+  cache 60
+  maxrange 1200
+
+  group account_id
+  rows "Account"
+  labels accounts_list.record_id > account_name
+  sort balance desc
+
+  money_in = sum accounts_money_in.amount "Money In" money
+  money_out = sum accounts_money_out.amount "Money Out" money
+  transfers_in = sum accounts_transfers.amount where direction=IN "Transfers In" money
+  transfers_out = sum accounts_transfers.amount where direction=OUT "Transfers Out" money
+  balance = money_in - money_out + transfers_in - transfers_out "Net Movement" money
+
+  headline {label}: {money_in} received, {money_out} spent, {balance} net movement.
+  remark balance < 0 | bad | Negative movement | {label} has outgoing movement exceeding incoming movement by {abs(balance)}.
+  remark true | neutral | Account movement | {label}: {money_in} received, {money_out} spent, {transfers_in} transferred in and {transfers_out} transferred out.
+
+
+report WalletBalances "Wallet Balances"
+  nest wallets
+  by dimension
+  date date
+  entity wallets_wallet_balances
+  role view_reports
+  currency KES
+  cache 60
+  maxrange 1200
+
+  group wallet_id
+  rows "Wallet"
+  labels wallets_list.record_id > wallet_name
+  sort balance desc
+
+  money_in = sum wallets_money_in.amount "Money In" money
+  money_out = sum wallets_money_out.amount "Money Out" money
+  transfers_in = sum wallets_transfers.amount where direction=IN "Transfers In" money
+  transfers_out = sum wallets_transfers.amount where direction=OUT "Transfers Out" money
+  balance = money_in - money_out + transfers_in - transfers_out "Net Movement" money
+
+  headline {label}: {money_in} allocated, {money_out} spent, {balance} net movement.
+  remark balance < 0 | bad | Negative movement | {label} has outgoing movement exceeding incoming movement by {abs(balance)}.
+  remark true | neutral | Wallet movement | {label}: {money_in} allocated, {money_out} spent, {transfers_in} transferred in and {transfers_out} transferred out.
+
+
+report AccountMoneyIn "Account Money In"
+  nest accounts
+  by month|day|year
+  date date
+  entity accounts_money_in_report
+  role view_reports
+  currency KES
+  cache 60
+  maxrange 1200
+
+  filter account_id = account_id
+
+  money_in = sum accounts_money_in.amount "Money In" money
+  transactions = count accounts_money_in "Transactions"
+  avg_in = money_in / transactions "Average Transaction" money
+  chg = change(money_in) "Money In vs Previous"
+
+  headline {label}: {money_in} received across {transactions} transactions[, {updown} {abs(chg)}% on {prev_label}].
+  remark transactions == 0 | neutral | No money received | No incoming account transactions were recorded in {label}.
+  remark true | good | Money received | {label}: {money_in} received across {transactions} transactions.
+
+
+report AccountMoneyOut "Account Money Out"
+  nest accounts
+  by month|day|year
+  date date
+  entity accounts_money_out_report
+  role view_reports
+  currency KES
+  cache 60
+  maxrange 1200
+
+  filter account_id = account_id
+
+  money_out = sum accounts_money_out.amount "Money Out" money
+  transactions = count accounts_money_out "Transactions"
+  avg_out = money_out / transactions "Average Transaction" money
+  chg = change(money_out) "Money Out vs Previous"
+
+  headline {label}: {money_out} spent across {transactions} transactions[, {updown} {abs(chg)}% on {prev_label}].
+  remark transactions == 0 | neutral | No money spent | No outgoing account transactions were recorded in {label}.
+  remark true | neutral | Money spent | {label}: {money_out} spent across {transactions} transactions.
+
+
+report AccountTransfers "Account Transfers"
+  nest accounts
+  by month|day|year
+  date date
+  entity accounts_transfers_report
+  role view_reports
+  currency KES
+  cache 60
+  maxrange 1200
+
+  filter account_id = account_id
+
+  transfers_in = sum accounts_transfers.amount where direction=IN "Transfers In" money
+  transfers_out = sum accounts_transfers.amount where direction=OUT "Transfers Out" money
+  net_transfers = transfers_in - transfers_out "Net Transfers" money
+  transactions = count accounts_transfers "Transfer Records"
+  chg = change(net_transfers) "Net Transfers vs Previous"
+
+  headline {label}: {transfers_in} transferred in, {transfers_out} transferred out, {net_transfers} net transfers.
+  remark transactions == 0 | neutral | No transfers | No account transfers were recorded in {label}.
+  remark net_transfers < 0 | watch | Net outflow | {label}: accounts transferred out {abs(net_transfers)} more than they received.
+  remark true | neutral | Account transfers | {label}: {transfers_in} transferred in and {transfers_out} transferred out.
+
+
+report WalletMoneyIn "Wallet Money In"
+  nest wallets
+  by month|day|year
+  date date
+  entity wallets_money_in_report
+  role view_reports
+  currency KES
+  cache 60
+  maxrange 1200
+
+  filter wallet_id = wallet_id
+
+  money_in = sum wallets_money_in.amount "Money In" money
+  transactions = count wallets_money_in "Transactions"
+  avg_in = money_in / transactions "Average Allocation" money
+  chg = change(money_in) "Allocations vs Previous"
+
+  headline {label}: {money_in} allocated across {transactions} transactions[, {updown} {abs(chg)}% on {prev_label}].
+  remark transactions == 0 | neutral | No allocations | No incoming wallet allocations were recorded in {label}.
+  remark true | good | Wallet allocations | {label}: {money_in} allocated across {transactions} transactions.
+
+
+report WalletMoneyOut "Wallet Money Out"
+  nest wallets
+  by month|day|year
+  date date
+  entity wallets_money_out_report
+  role view_reports
+  currency KES
+  cache 60
+  maxrange 1200
+
+  filter wallet_id = wallet_id
+
+  money_out = sum wallets_money_out.amount "Money Out" money
+  transactions = count wallets_money_out "Transactions"
+  avg_out = money_out / transactions "Average Transaction" money
+  chg = change(money_out) "Spending vs Previous"
+
+  headline {label}: {money_out} spent across {transactions} transactions[, {updown} {abs(chg)}% on {prev_label}].
+  remark transactions == 0 | neutral | No spending | No outgoing wallet transactions were recorded in {label}.
+  remark true | neutral | Wallet spending | {label}: {money_out} spent across {transactions} transactions.
+
+
+report WalletTransfers "Wallet Transfers"
+  nest wallets
+  by month|day|year
+  date date
+  entity wallets_transfers_report
+  role view_reports
+  currency KES
+  cache 60
+  maxrange 1200
+
+  filter wallet_id = wallet_id
+
+  transfers_in = sum wallets_transfers.amount where direction=IN "Transfers In" money
+  transfers_out = sum wallets_transfers.amount where direction=OUT "Transfers Out" money
+  net_transfers = transfers_in - transfers_out "Net Transfers" money
+  transactions = count wallets_transfers "Transfer Records"
+  chg = change(net_transfers) "Net Transfers vs Previous"
+
+  headline {label}: {transfers_in} transferred in, {transfers_out} transferred out, {net_transfers} net transfers.
+  remark transactions == 0 | neutral | No transfers | No wallet transfers were recorded in {label}.
+  remark net_transfers < 0 | watch | Net outflow | {label}: wallets transferred out {abs(net_transfers)} more than they received.
+  remark true | neutral | Wallet transfers | {label}: {transfers_in} transferred in and {transfers_out} transferred out.
+
+
+report AccountForecast "Account Transaction Forecast"
+  nest accounts
+  by month|year
+  date date
+  entity accounts_transaction_forecast
+  role view_reports
+  currency KES
+  cache 60
+  maxrange 1200
+
+  filter account_id = account_id
+
+  money_in = sum accounts_money_in.amount "Money In" money
+  money_out = sum accounts_money_out.amount "Money Out" money
+  transfers_in = sum accounts_transfers.amount where direction=IN "Transfers In" money
+  transfers_out = sum accounts_transfers.amount where direction=OUT "Transfers Out" money
+
+  net_movement = money_in - money_out + transfers_in - transfers_out "Net Movement" money
+
+  forecast money_in next 12
+  forecast money_out next 12
+  forecast transfers_in next 12
+  forecast transfers_out next 12
+
+  headline {label}: {money_in} received, {money_out} spent, {net_movement} net movement.
+
+  remark money_in == 0 | watch | No money received | No money in was recorded for {label}.
+  remark money_out > money_in | watch | Spending exceeds income | Money out exceeded money in for {label}.
+  remark true | neutral | Account activity | Historical figures are actual transactions. Forecasts estimate future activity from historical trends.
+
+
+report WalletForecast "Wallet Transaction Forecast"
+  nest wallets
+  by month|year
+  date date
+  entity wallets_transaction_forecast
+  role view_reports
+  currency KES
+  cache 60
+  maxrange 1200
+
+  filter wallet_id = wallet_id
+
+  money_in = sum wallets_money_in.amount "Money In" money
+  money_out = sum wallets_money_out.amount "Money Out" money
+  transfers_in = sum wallets_transfers.amount where direction=IN "Transfers In" money
+  transfers_out = sum wallets_transfers.amount where direction=OUT "Transfers Out" money
+
+  net_movement = money_in - money_out + transfers_in - transfers_out "Net Movement" money
+
+  forecast money_in next 12
+  forecast money_out next 12
+  forecast transfers_in next 12
+  forecast transfers_out next 12
+
+  headline {label}: {money_in} received, {money_out} spent, {net_movement} net movement.
+
+  remark money_in == 0 | watch | No money received | No money in was recorded for {label}.
+  remark money_out > money_in | watch | Spending exceeds income | Money out exceeded money in for {label}.
+  remark true | neutral | Wallet activity | Historical figures are actual transactions. Forecasts estimate future activity from historical trends.

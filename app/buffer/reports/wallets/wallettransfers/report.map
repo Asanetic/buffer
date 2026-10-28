@@ -1,0 +1,21 @@
+report WalletTransfers "Wallet Transfers"
+  by month|day|year
+  date date
+  entity wallets_transfers_report
+  role view_reports
+  currency KES
+  cache 60
+  maxrange 1200
+
+  filter wallet_id = wallet_id
+
+  transfers_in = sum wallets_transfers.amount where direction=IN "Transfers In" money
+  transfers_out = sum wallets_transfers.amount where direction=OUT "Transfers Out" money
+  net_transfers = transfers_in - transfers_out "Net Transfers" money
+  transactions = count wallets_transfers "Transfer Records"
+  chg = change(net_transfers) "Net Transfers vs Previous"
+
+  headline {label}: {transfers_in} transferred in, {transfers_out} transferred out, {net_transfers} net transfers.
+  remark transactions == 0 | neutral | No transfers | No wallet transfers were recorded in {label}.
+  remark net_transfers < 0 | watch | Net outflow | {label}: wallets transferred out {abs(net_transfers)} more than they received.
+  remark true | neutral | Wallet transfers | {label}: {transfers_in} transferred in and {transfers_out} transferred out.

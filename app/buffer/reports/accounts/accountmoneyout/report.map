@@ -1,0 +1,19 @@
+report AccountMoneyOut "Account Money Out"
+  by month|day|year
+  date date
+  entity accounts_money_out_report
+  role view_reports
+  currency KES
+  cache 60
+  maxrange 1200
+
+  filter account_id = account_id
+
+  money_out = sum accounts_money_out.amount "Money Out" money
+  transactions = count accounts_money_out "Transactions"
+  avg_out = money_out / transactions "Average Transaction" money
+  chg = change(money_out) "Money Out vs Previous"
+
+  headline {label}: {money_out} spent across {transactions} transactions[, {updown} {abs(chg)}% on {prev_label}].
+  remark transactions == 0 | neutral | No money spent | No outgoing account transactions were recorded in {label}.
+  remark true | neutral | Money spent | {label}: {money_out} spent across {transactions} transactions.

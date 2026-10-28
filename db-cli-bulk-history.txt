@@ -1,0 +1,5 @@
+accounts_list,accounts_money_in,accounts_money_out,accounts_transfers,wallets_list,wallets_money_in,wallets_money_out,wallets_transfers
+wallets_list
+accounts_transfers
+wallets_transfers
+system_users

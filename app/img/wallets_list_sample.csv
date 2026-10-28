@@ -1,0 +1,5 @@
+wallets_list_identifier,wallet_name,wallet_type,wallet_code,wallet_number,remark
+WAL-LIFE-INSURANCE,Life Insurance,Protection,WAL001,,"Protected savings target KES 700,000 for life insurance and long-term protection."
+WAL-FLOATING,Floating,Daily Spending,WAL002,,"Controlled allowance for groceries, household needs, family support, donations, and variable expenses."
+WAL-BILLS-FEES,Bills & Fees,Obligations,WAL003,,"Reserved for rent, school fees, utilities, and other known obligations."
+WAL-HOME-BUSINESS,Home & Business,Goals & Investment,WAL004,,"Funds for home construction and productive business capital; home goal approximately KES 2,000,000."

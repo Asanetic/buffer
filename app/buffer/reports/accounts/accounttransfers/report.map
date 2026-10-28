@@ -1,0 +1,21 @@
+report AccountTransfers "Account Transfers"
+  by month|day|year
+  date date
+  entity accounts_transfers_report
+  role view_reports
+  currency KES
+  cache 60
+  maxrange 1200
+
+  filter account_id = account_id
+
+  transfers_in = sum accounts_transfers.amount where direction=IN "Transfers In" money
+  transfers_out = sum accounts_transfers.amount where direction=OUT "Transfers Out" money
+  net_transfers = transfers_in - transfers_out "Net Transfers" money
+  transactions = count accounts_transfers "Transfer Records"
+  chg = change(net_transfers) "Net Transfers vs Previous"
+
+  headline {label}: {transfers_in} transferred in, {transfers_out} transferred out, {net_transfers} net transfers.
+  remark transactions == 0 | neutral | No transfers | No account transfers were recorded in {label}.
+  remark net_transfers < 0 | watch | Net outflow | {label}: accounts transferred out {abs(net_transfers)} more than they received.
+  remark true | neutral | Account transfers | {label}: {transfers_in} transferred in and {transfers_out} transferred out.

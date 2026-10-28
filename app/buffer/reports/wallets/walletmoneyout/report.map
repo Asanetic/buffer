@@ -1,0 +1,19 @@
+report WalletMoneyOut "Wallet Money Out"
+  by month|day|year
+  date date
+  entity wallets_money_out_report
+  role view_reports
+  currency KES
+  cache 60
+  maxrange 1200
+
+  filter wallet_id = wallet_id
+
+  money_out = sum wallets_money_out.amount "Money Out" money
+  transactions = count wallets_money_out "Transactions"
+  avg_out = money_out / transactions "Average Transaction" money
+  chg = change(money_out) "Spending vs Previous"
+
+  headline {label}: {money_out} spent across {transactions} transactions[, {updown} {abs(chg)}% on {prev_label}].
+  remark transactions == 0 | neutral | No spending | No outgoing wallet transactions were recorded in {label}.
+  remark true | neutral | Wallet spending | {label}: {money_out} spent across {transactions} transactions.
