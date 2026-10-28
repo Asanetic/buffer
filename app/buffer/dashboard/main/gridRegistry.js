@@ -11,3 +11,4 @@ export default {
     latestAccounts:AccountslistList,
     latestWallets:WalletslistList
 };
+
