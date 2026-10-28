@@ -131,7 +131,65 @@ export default {
             `,
           },
         },
+        {
+          id: 'unallocatedAmount',
+          label: 'Unallocated Amount',
+          prefix: 'KES ',
+          query: {
+            sql: `
+              SELECT
+                (
+                  (
+                    SELECT COALESCE(SUM(i.amount), 0)
+                    FROM {db}.accounts_money_in i
+                    WHERE (:site IS NULL OR i.hive_site_id = :site)
+                      AND (:from IS NULL OR i.date >= :from)
+                      AND (
+                        :to IS NULL
+                        OR i.date < DATE_ADD(:to, INTERVAL 1 DAY)
+                      )
+                  )
+                  -
+                  (
+                    SELECT COALESCE(SUM(o.amount), 0)
+                    FROM {db}.accounts_money_out o
+                    WHERE (:site IS NULL OR o.hive_site_id = :site)
+                      AND (:from IS NULL OR o.date >= :from)
+                      AND (
+                        :to IS NULL
+                        OR o.date < DATE_ADD(:to, INTERVAL 1 DAY)
+                      )
+                  )
+                )
+                -
+                (
+                  (
+                    SELECT COALESCE(SUM(i.amount), 0)
+                    FROM {db}.wallets_money_in i
+                    WHERE (:site IS NULL OR i.hive_site_id = :site)
+                      AND (:from IS NULL OR i.date >= :from)
+                      AND (
+                        :to IS NULL
+                        OR i.date < DATE_ADD(:to, INTERVAL 1 DAY)
+                      )
+                  )
+                  -
+                  (
+                    SELECT COALESCE(SUM(o.amount), 0)
+                    FROM {db}.wallets_money_out o
+                    WHERE (:site IS NULL OR o.hive_site_id = :site)
+                      AND (:from IS NULL OR o.date >= :from)
+                      AND (
+                        :to IS NULL
+                        OR o.date < DATE_ADD(:to, INTERVAL 1 DAY)
+                      )
+                  )
+                ) AS value
+            `,
+          },
+        },
       ],
+      
     },
   
     // ==================================================
