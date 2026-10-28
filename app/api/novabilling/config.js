@@ -12,7 +12,7 @@
 
 // Asset id registered on NovaBloom for this app. While empty, billing is
 // treated as "not configured" and never blocks anyone.
-export const NOVABILLING_ASSET_ID = 'VKUIQUY';
+export const NOVABILLING_ASSET_ID = '5UJO434';
 
 // Master switch. false = the whole billing layer is a no-op (server AND
 // client — the client just follows what the server reports).
