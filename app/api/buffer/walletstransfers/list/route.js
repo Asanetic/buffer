@@ -208,7 +208,32 @@ export async function POST(request) {
     const mutatedDataArray = mutateInputArray(schema.entity, inputsArr, body, newId, authData);
     mutatedDataArray[recordIdCol] = newId;
 
+    // Transfer to another wallet: tag both legs with a shared ref and write the mirror row on the
+    // destination wallet (direction flipped, wallet/transfer_to swapped). Inserted directly, not via
+    // POST, so it can't recurse. Only on create — edits/deletes of one leg don't touch the other.
+    // A destination with no direction means "send from this wallet", so default to OUT.
+    if (body.transfer_to && !String(body.direction || '').trim()) body.direction = 'OUT';
+    const isPair = !!body.transfer_to && ['IN', 'OUT'].includes(String(body.direction).toUpperCase());
+    if (isPair) body.transfer_ref = newId;
+
     const result = await mosySqlInsert(schema.entity, mutatedDataArray, body);
+
+    if (isPair) {
+      const out = String(body.direction).toUpperCase() === 'OUT';
+      const mirrorId = magicRandomStr(7);
+      const mirrorBody = {
+        ...body,
+        wallet_id: body.transfer_to,
+        transfer_to: body.wallet_id,
+        direction: out ? 'IN' : 'OUT',
+        category: typeof body.category === 'string'
+          ? body.category.replace(/^transfer (in|out):/i, (_, d) => `Transfer ${d.toLowerCase() === 'in' ? 'out' : 'in'}:`)
+          : body.category,
+      };
+      const mirrorArr = mutateInputArray(schema.entity, buildInputsArr(), mirrorBody, mirrorId, authData);
+      mirrorArr[recordIdCol] = mirrorId;
+      await mosySqlInsert(schema.entity, mirrorArr, mirrorBody);
+    }
 
     return Response.json({
       status: 'success',
@@ -300,7 +325,16 @@ export async function DELETE(request) {
     // there's no record left to read a stored media path from.
     const existingImagePaths = await getImageFieldPaths(dataNodeValue);
 
-    const result = await mosySqlDelete(schema.entity, `where ${primkeyCol}='${dataNodeValue}'`);
+    // Deleting one leg of a transfer deletes every row sharing its transfer_ref (both legs), so the
+    // pair can't be left half-booked. Rows without a ref (plain transfers) delete on their own.
+    const existing = await mosyQddata(schema.entity, primkeyCol, dataNodeValue);
+    const ref = String(existing?.transfer_ref || '').replace(/[^A-Za-z0-9_-]/g, '');
+    const site = String(authData?.hive_site_id || '').replace(/'/g, "''");
+    const whereStr = ref
+      ? `where transfer_ref='${ref}'${site ? ` and hive_site_id='${site}'` : ''}`
+      : `where ${primkeyCol}='${dataNodeValue}'`;
+
+    const result = await mosySqlDelete(schema.entity, whereStr);
 
     if (result) {
       await deleteFiles(Object.values(existingImagePaths));

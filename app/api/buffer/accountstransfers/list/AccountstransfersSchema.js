@@ -29,6 +29,8 @@ export const AccountstransfersSchema = {
     { key: 'hive_site_id', type: 'text', searchable: true },
     { key: 'hive_site_name', type: 'text', title: true, searchable: true },
     { key: 'direction', type: 'groupedSelect', endpoint: '/api/buffer/accountstransfers/list', groupByField: 'direction', searchable: true },
+    { key: 'transfer_to', type: 'text', searchable: true },
+    { key: 'transfer_ref', type: 'text', searchable: true },
     { key: 'row_count', type: 'number', computed: true, editable: false },
   ],
 
@@ -36,6 +38,7 @@ export const AccountstransfersSchema = {
   // Same shape as your existing *BatchMutations.js files.
   batchMutations: {
     ...resolveJoin('account_id', { as: 'account_name' }),
+    ...resolveJoin('transfer_to__accounts_list', { key: 'transfer_to', as: 'transfer_to_name' }),
   },
 
   roles: { view: 'view_accountstransfers', manage: 'manage_accountstransfers' },

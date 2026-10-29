@@ -29,7 +29,7 @@ const saAuthConfigs = {
 
   // UI toggles
   showResetLink: false, // true || false
-  showCreateAccount: false, // true || false
+  showCreateAccount: true, // true || false
 
   // Routes (UI component files/pages, not PHP scripts)
   loginUrl: `${hiveRoutes.auth}/login`,

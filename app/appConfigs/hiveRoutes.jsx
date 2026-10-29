@@ -8,3 +8,7 @@ export const hiveRoutes = {
   home: '/buffer/dashboard/main',
   // add more as needed
 };
+
+// <Link> / router.push add the Next basePath themselves, so strip it from hiveRoutes values
+// (which include it for window.location / fetch) before handing them to those.
+export const linkPath = (p = '') => p.startsWith(hiveRoutes.hiveBaseRoute) ? p.slice(hiveRoutes.hiveBaseRoute.length) || '/' : p;

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Mail, Phone, Eye, EyeOff, ChevronDown } from "lucide-react";
-import { hiveRoutes } from "../../appConfigs/hiveRoutes";
+import { hiveRoutes, linkPath } from "../../appConfigs/hiveRoutes";
 import { ProcessUserLogin } from "../AuthUtils";
 import { closeMosyModal, MosyNotify } from "../../MosyUtils/ActionModals";
 
@@ -197,11 +197,11 @@ export default function LoginForm({ onLogin, redirectTo = "/dashboard" }) {
       <div className="text-center mt-4" style={{ fontSize: 14, color: "#64748B" }}>
         New to AssetGuard?{" "}
         <div className="col-md-12 py-1"></div>
-        <Link href={`${hiveRoutes.auth}/registration`} className="fw-semibold text-decoration-none mr-2" style={{ color: "#334155" }}>
+        <Link href={`${linkPath(hiveRoutes.auth)}/registration`} className="fw-semibold text-decoration-none mr-2" style={{ color: "#334155" }}>
           Request access
         </Link>      
         |
-        <Link href={`${hiveRoutes.auth}/accstatus`} className="fw-semibold ml-2 text-decoration-none" style={{ color: BLUE }}>
+        <Link href={`${linkPath(hiveRoutes.auth)}/accstatus`} className="fw-semibold ml-2 text-decoration-none" style={{ color: BLUE }}>
           Check status 
         </Link> 
       </div>

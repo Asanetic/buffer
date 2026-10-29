@@ -120,13 +120,13 @@ export const WalletstransfersSchema = {
 
   fieldGroups: [],
   // Field keys shown as columns in list view, in display order.
-  showInList: ['row_count', 'date', 'amount', 'category', 'ref_no', 'wallet_name', 'direction'],
+  showInList: ['row_count', 'date', 'amount', 'category', 'ref_no', 'wallet_name', 'direction', 'transfer_to_name'],
 
   //export columns these columns are used to generate upload csv template file
-  exportColumns: ['record_id', 'date', 'amount', 'category', 'ref_no', 'wallet_id', 'direction'],
+  exportColumns: ['record_id', 'date', 'amount', 'category', 'ref_no', 'wallet_id', 'direction', 'transfer_to'],
 
   sections: [
-    { key: 'basic_information', label: 'Basic Information', columns: 3, fields: ['date', 'amount', 'category', 'ref_no', 'wallet_id', 'direction'] },
+    { key: 'basic_information', label: 'Basic Information', columns: 3, fields: ['date', 'amount', 'category', 'ref_no', 'wallet_id', 'direction', 'transfer_to'] },
   ],
 
   fields: [
@@ -139,6 +139,8 @@ export const WalletstransfersSchema = {
     { key: 'ref_no', label: 'Ref No', type: 'text' },
     ...resolveField('wallet_id', { as: 'wallet_name', colSpan: 4 }),
     { key: 'direction', label: 'Direction', type: 'groupedSelect', endpoint: moduleApi, groupByField: 'direction' },
+    ...resolveField('transfer_to__wallets_list', { key: 'transfer_to', as: 'transfer_to_name', colSpan: 4 }),
+    { key: 'transfer_ref', label: 'Transfer Ref', type: 'text', editable: false }, // links the OUT/IN pair; not in any section so never rendered
     { key: 'row_count', label: '#', type: 'number', computed: true, editable: false },
     //  live search field sample 
     // { key: 'permissions', label: 'Permissions',

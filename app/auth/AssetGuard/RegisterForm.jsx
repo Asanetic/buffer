@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { hiveRoutes } from "../../appConfigs/hiveRoutes";
+import { hiveRoutes, linkPath } from "../../appConfigs/hiveRoutes";
 import { mosyGetData, mosyPostData } from "../../MosyUtils/hiveUtils";
 import { MosyNotify } from "../../MosyUtils/ActionModals";
 
@@ -239,11 +239,11 @@ export default function RegisterForm({
 
       <div className="text-center mt-4" style={{ fontSize: 14, color: "#64748B" }}>
         Already have an account?{" "}
-        <Link href={`${hiveRoutes.auth}/login`} className="fw-semibold text-decoration-none mr-2" style={{ color: BLUE }}>
+        <Link href={`${linkPath(hiveRoutes.auth)}/login`} className="fw-semibold text-decoration-none mr-2" style={{ color: BLUE }}>
           Log in
         </Link>
         |
-        <Link href={`${hiveRoutes.auth}/accstatus`} className="fw-semibold ml-2 text-decoration-none" style={{ color: BLUE }}>
+        <Link href={`${linkPath(hiveRoutes.auth)}/accstatus`} className="fw-semibold ml-2 text-decoration-none" style={{ color: BLUE }}>
           Check status
         </Link>
       </div>

@@ -37,6 +37,28 @@ export const globalRelations = {
     // used by: accounts_money_in, accounts_money_out, accounts_transfers
   },
 
+  transfer_to__accounts_list: {
+    table: "accounts_list",
+    endpoint: apiRoute.accountslist.base,
+    valueField: "record_id",
+    displayField: "account_name",
+    cacheField: "account_name",
+    label: "Transfer to account",
+    // polymorphic "transfer_to" — see other __ variants for its other targets
+    // used by: accounts_transfers
+  },
+
+  transfer_to__wallets_list: {
+    table: "wallets_list",
+    endpoint: apiRoute.walletslist.base,
+    valueField: "record_id",
+    displayField: "wallet_name",
+    cacheField: "wallet_name",
+    label: "Transfer to wallet",
+    // polymorphic "transfer_to" — see other __ variants for its other targets
+    // used by: wallets_transfers
+  },
+
   wallet_id: {
     table: "wallets_list",
     endpoint: apiRoute.walletslist.base,

@@ -1,5 +1,6 @@
 import mosyThemeConfigs from '../../appConfigs/mosyTheme';
 import saAuthConfigs from '../featureConfig/saAuthConfigs'; 
+import { linkPath } from '../../appConfigs/hiveRoutes';
 
 import RegisterForm from './uiControl/RegisterForm';
 
@@ -29,7 +30,7 @@ export default function RegisterPage() {
       loginBgImg={loginBgImg}
       appLogo={appLogo}
       appName={appName}
-      loginUrl={loginUrl}
+      loginUrl={linkPath(loginUrl)}
     />
   );
 }

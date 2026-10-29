@@ -3,6 +3,7 @@ import userAvatarImg from '../img/useravatar.png'; // outside public!
 import AdminNav from '../components/AdminNav';
 import AdminFooter from '../components/AdminFooter';
 import DashboardClientWrapper from './DashboardClientWrapper';
+import TransactionPanel from './transact/TransactionPanel';
 // app/layout.js
 import appConfigs from '../appConfigs/mosyTheme'; // Theme config
 import '../css/designer.css';
@@ -43,6 +44,7 @@ export default function DashboardLayout({ children }) {
       </div>
 
       <AdminFooter />
+      <TransactionPanel />
     </>
   );
 }

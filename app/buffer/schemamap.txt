@@ -4,7 +4,7 @@ accounts_money_in:record_id|account_id:record_id:accounts_list(Account)
 
 accounts_money_out:record_id|account_id:record_id:accounts_list(Account)
 
-accounts_transfers:record_id|account_id:record_id:accounts_list(Account)
+accounts_transfers:record_id|account_id:record_id:accounts_list(Account),transfer_to:record_id:accounts_list(Transfer to account)
 
 wallets_list:wallet_name|
 
@@ -12,4 +12,4 @@ wallets_money_in:record_id|wallet_id:record_id:wallets_list(Wallet)
 
 wallets_money_out:record_id|wallet_id:record_id:wallets_list(Wallet)
 
-wallets_transfers:record_id|wallet_id:record_id:wallets_list(Wallet)
+wallets_transfers:record_id|wallet_id:record_id:wallets_list(Wallet),transfer_to:record_id:wallets_list(Transfer to wallet)

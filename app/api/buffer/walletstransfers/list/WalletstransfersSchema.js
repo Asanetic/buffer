@@ -29,6 +29,8 @@ export const WalletstransfersSchema = {
     { key: 'hive_site_id', type: 'text', searchable: true },
     { key: 'hive_site_name', type: 'text', title: true, searchable: true },
     { key: 'direction', type: 'groupedSelect', endpoint: '/api/buffer/walletstransfers/list', groupByField: 'direction', searchable: true },
+    { key: 'transfer_to', type: 'text', searchable: true },
+    { key: 'transfer_ref', type: 'text', searchable: true },
     { key: 'row_count', type: 'number', computed: true, editable: false },
   ],
 
@@ -36,6 +38,7 @@ export const WalletstransfersSchema = {
   // Same shape as your existing *BatchMutations.js files.
   batchMutations: {
     ...resolveJoin('wallet_id', { as: 'wallet_name' }),
+    ...resolveJoin('transfer_to__wallets_list', { key: 'transfer_to', as: 'transfer_to_name' }),
   },
 
   roles: { view: 'view_walletstransfers', manage: 'manage_walletstransfers' },

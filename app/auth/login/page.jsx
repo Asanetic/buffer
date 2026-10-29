@@ -1,6 +1,7 @@
 
 import mosyThemeConfigs from '../../appConfigs/mosyTheme';
 import saAuthConfigs from '../featureConfig/saAuthConfigs'; 
+import { linkPath } from '../../appConfigs/hiveRoutes';
 
 
 import DefaultLoginForm from './uiControl/DefaultLoginForm';
@@ -40,9 +41,9 @@ export default function AuthPage({baseRoot=""}) {
       appLogo={appLogo}
       appName={appName}
       showResetLink={showResetLink}
-      changePasswordUrl={`${baseRoot}${changePasswordUrl}`}
+      changePasswordUrl={`${baseRoot}${linkPath(changePasswordUrl)}`}
       showCreateAccount={showCreateAccount}
-      registerUrl={`${baseRoot}${registerUrl}`}
+      registerUrl={`${baseRoot}${linkPath(registerUrl)}`}
     />
   );
 }

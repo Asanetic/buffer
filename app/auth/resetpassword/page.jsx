@@ -1,6 +1,7 @@
 
 import mosyThemeConfigs from '../../appConfigs/mosyTheme';
 import saAuthConfigs from '../featureConfig/saAuthConfigs'; 
+import { linkPath } from '../../appConfigs/hiveRoutes';
 
 
 import ResetPasswordForm from './uiControl/ResetPasswordForm';
@@ -35,7 +36,7 @@ export default function ResetPasswordPage() {
       loginBgImg={loginBgImg}
       appLogo={appLogo}
       appName={appName}
-      loginUrl={loginUrl}
+      loginUrl={linkPath(loginUrl)}
     />
   );
 }
