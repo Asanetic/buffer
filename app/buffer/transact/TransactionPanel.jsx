@@ -32,17 +32,43 @@ const TARGETS = {
 };
 
 // id === name: the category text is what gets stored on the row.
-const named = (...names) => names.map((n) => ({ id: n, name: n }));
-const CATEGORIES = {
-  in: named('Business Income', 'Salary', 'Other Income'),
-  out: named('Shopping', 'Bills & Utilities', 'Transport', 'Food', 'Other'),
-  transfer: named('Transfer'),
+// These seed the list; every category already saved in the DB is merged in on top (see loadCategories).
+const SEED = {
+  in: ['Business Income', 'Salary', 'Other Income'],
+  out: ['Shopping', 'Bills & Utilities', 'Transport', 'Food', 'Other'],
+  transfer: ['Transfer'],
 };
+const toOptions = (names) => names.map((n) => ({ id: n, name: n }));
 
 export default function TransactionPanel() {
   const [accounts, setAccounts] = useState([]);
   const [wallets, setWallets] = useState([]);
   const [error, setError] = useState(null);
+  const [categories, setCategories] = useState(() => ({
+    in: toOptions(SEED.in), out: toOptions(SEED.out), transfer: toOptions(SEED.transfer),
+  }));
+
+  // Same DISTINCT lookup groupedSelect fields use (SmartDropdown): groupBy + src = base64 column name.
+  // Account and wallet tables are merged so a category typed once is offered everywhere for that type.
+  const loadCategories = useCallback(async () => {
+    const next = {};
+    for (const type of ['in', 'out', 'transfer']) {
+      const results = await Promise.all(['account', 'wallet'].map((k) => mosyGetData({
+        endpoint: TARGETS[k][type],
+        params: { groupBy: btoa('category'), src: btoa('category') },
+      }).catch(() => null)));
+      const found = results.flatMap((r) => (r?.status === 'success' && Array.isArray(r.data) ? r.data : []))
+        .map((row) => String(row?.category ?? '').trim()).filter(Boolean);
+      const seen = new Set();
+      next[type] = toOptions([...SEED[type], ...found].filter((n) => {
+        const key = n.toLowerCase();
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      }));
+    }
+    setCategories(next);
+  }, []);
 
   const loadAccounts = useCallback(async () => {
     const raw = await mosyGetData({ endpoint: apiRoutes.accountslist.base, params: { pageNo: 1, pageSize: 500 } });
@@ -54,7 +80,10 @@ export default function TransactionPanel() {
     setWallets(wRows.map((r) => ({ id: r.record_id, name: r.wallet_name, balance: Number(r.net_balance) || 0 })));
   }, []);
 
-  useEffect(() => { loadAccounts().catch((e) => setError(e.message)); }, [loadAccounts]);
+  useEffect(() => {
+    loadAccounts().catch((e) => setError(e.message));
+    loadCategories();
+  }, [loadAccounts, loadCategories]);
 
   const handleSubmit = async (p) => {
     const target = TARGETS[p.kind === 'wallet' ? 'wallet' : 'account'];
@@ -70,6 +99,7 @@ export default function TransactionPanel() {
     const res = await mosyPostData({ url: target[p.type], data });
     if (res?.status !== 'success') throw new Error(res?.message || 'Could not save the transaction.');
     await loadAccounts(); // balances changed
+    loadCategories(); // pick up a category that was just typed in
 
     // Show that account's/wallet's rows for this type in a card, so the new entry is visible straight away.
     // Filtered through fixedQuery exactly like the related-records popups in each module's actionsRegistry.
@@ -93,7 +123,7 @@ export default function TransactionPanel() {
   return (
     <>
       {error && <div className="alert alert-danger position-fixed" style={{ bottom: 90, left: 16, zIndex: 1060 }}>{error}</div>}
-      <QuickAccessBar accounts={accounts} wallets={wallets} categories={CATEGORIES} onSubmit={handleSubmit} />
+      <QuickAccessBar accounts={accounts} wallets={wallets} categories={categories} onSubmit={handleSubmit} />
     </>
   );
 }
