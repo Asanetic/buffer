@@ -94,6 +94,8 @@ export default function TransactionPanel() {
       category: p.categoryId,
       ref_no: p.party || '',
       [target.idCol]: p.accountId,
+      // Account money-out with an attached wallet: the route also writes the wallet's money-out and links the two.
+      ...(p.kind !== 'wallet' && p.type === 'out' && p.walletId ? { wallet_id: p.walletId } : {}),
       ...(p.type === 'transfer' ? { transfer_to: p.toAccountId, direction: 'OUT' } : {}),
     };
     const res = await mosyPostData({ url: target[p.type], data });

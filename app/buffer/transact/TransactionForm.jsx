@@ -340,11 +340,13 @@ export default function TransactionForm({
   const isWallet = kind === "wallet" && hasWallets;
   const list = isWallet ? wallets : accounts;
   const noun = isWallet ? "Wallet" : "Account";
+  const attachWallet = type === "out" && !isWallet && hasWallets; // physical account (e.g. M-Pesa) paying out of a virtual wallet (e.g. Float)
   const cats = categories?.[type] ?? DEFAULT_CATEGORIES[type];
   const fmt = (n) => `${currency} ${Number(n).toLocaleString("en-KE")}`;
 
   const [accountId, setAccountId] = useState("");
   const [toAccountId, setToAccountId] = useState("");
+  const [walletId, setWalletId] = useState(""); // optional wallet attached to an ACCOUNT money-out
   const [amount, setAmount] = useState("");
   const [categoryId, setCategoryId] = useState("");
   const [party, setParty] = useState("");
@@ -359,6 +361,7 @@ export default function TransactionForm({
     setKind("account");
     setAccountId(accounts[0]?.id ?? "");
     setToAccountId("");
+    setWalletId("");
     setAmount("");
     setCategoryId("");
     setParty("");
@@ -387,6 +390,7 @@ export default function TransactionForm({
     setKind(k);
     setAccountId((k === "wallet" ? wallets : accounts)[0]?.id ?? "");
     setToAccountId("");
+    setWalletId("");
     setErrors({});
   };
 
@@ -417,6 +421,8 @@ export default function TransactionForm({
       if (!toAccountId) e.toAccount = `Select a destination ${noun.toLowerCase()}`;
       else if (toAccountId === accountId) e.toAccount = `Choose a different ${noun.toLowerCase()}`;
     }
+    const attached = wallets.find((w) => w.id === walletId);
+    if (attachWallet && attached && amt > attached.balance) e.wallet = "Amount exceeds the wallet's available balance";
     if (!date) e.date = "Pick a date";
     setErrors(e);
     return Object.keys(e).length === 0;
@@ -433,6 +439,7 @@ export default function TransactionForm({
         kind: isWallet ? "wallet" : "account",
         accountId,
         toAccountId: type === "transfer" ? toAccountId : undefined,
+        walletId: attachWallet && walletId ? walletId : undefined,
         amount: Number(String(amount).replace(/,/g, "")),
         categoryId,
         party: type === "transfer" ? undefined : party.trim() || undefined,
@@ -514,6 +521,18 @@ export default function TransactionForm({
               onChange={setToAccountId}
               placeholder="Select destination"
               invalid={!!errors.toAccount}
+            />
+          </Field>
+        )}
+
+        {attachWallet && (
+          <Field label="Attached Wallet (optional)" error={errors.wallet}>
+            <Select
+              value={walletId}
+              options={[{ id: "", label: "None", icon: "tag" }, ...wallets.map((w) => ({ id: w.id, label: w.name, meta: `Balance: ${fmt(w.balance)}`, icon: "cash" }))]}
+              onChange={setWalletId}
+              placeholder="None — account only"
+              invalid={!!errors.wallet}
             />
           </Field>
         )}

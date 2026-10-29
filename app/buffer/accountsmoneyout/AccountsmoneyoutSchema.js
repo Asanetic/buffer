@@ -119,13 +119,13 @@ export const AccountsmoneyoutSchema = {
 
   fieldGroups: [],
   // Field keys shown as columns in list view, in display order.
-  showInList: ['row_count', 'date', 'amount', 'category', 'ref_no', 'account_name'],
+  showInList: ['row_count', 'date', 'amount', 'category', 'ref_no', 'account_name', 'wallet_name'],
 
   //export columns these columns are used to generate upload csv template file
-  exportColumns: ['record_id', 'date', 'amount', 'category', 'ref_no', 'account_id'],
+  exportColumns: ['record_id', 'date', 'amount', 'category', 'ref_no', 'account_id', 'wallet_id'],
 
   sections: [
-    { key: 'basic_information', label: 'Basic Information', columns: 3, fields: ['date', 'amount', 'category', 'ref_no', 'account_id'] },
+    { key: 'basic_information', label: 'Basic Information', columns: 3, fields: ['date', 'amount', 'category', 'ref_no', 'account_id', 'wallet_id'] },
   ],
 
   fields: [
@@ -137,6 +137,8 @@ export const AccountsmoneyoutSchema = {
     { key: 'category', label: 'Category', type: 'groupedSelect', endpoint: moduleApi, groupByField: 'category' },
     { key: 'ref_no', label: 'Ref No', type: 'text' },
     ...resolveField('account_id', { as: 'account_name', colSpan: 4 }),
+    ...resolveField('wallet_id', { as: 'wallet_name', label: 'Attached Wallet', colSpan: 4 }),
+    { key: 'link_ref', label: 'Link Ref', type: 'text', editable: false }, // ties this row to its wallet money-out; not in any section so never rendered
     { key: 'row_count', label: '#', type: 'number', computed: true, editable: false },
     //  live search field sample 
     // { key: 'permissions', label: 'Permissions',

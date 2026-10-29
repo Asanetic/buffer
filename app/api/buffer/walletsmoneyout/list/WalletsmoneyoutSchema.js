@@ -28,6 +28,7 @@ export const WalletsmoneyoutSchema = {
     { key: 'wallet_id', type: 'text', searchable: true },
     { key: 'hive_site_id', type: 'text', searchable: true },
     { key: 'hive_site_name', type: 'text', title: true, searchable: true },
+    { key: 'link_ref', type: 'text', searchable: true },
     { key: 'row_count', type: 'number', computed: true, editable: false },
   ],
 

@@ -28,6 +28,8 @@ export const AccountsmoneyoutSchema = {
     { key: 'account_id', type: 'text', searchable: true },
     { key: 'hive_site_id', type: 'text', searchable: true },
     { key: 'hive_site_name', type: 'text', title: true, searchable: true },
+    { key: 'wallet_id', type: 'text', searchable: true },
+    { key: 'link_ref', type: 'text', searchable: true },
     { key: 'row_count', type: 'number', computed: true, editable: false },
   ],
 
@@ -35,6 +37,7 @@ export const AccountsmoneyoutSchema = {
   // Same shape as your existing *BatchMutations.js files.
   batchMutations: {
     ...resolveJoin('account_id', { as: 'account_name' }),
+    ...resolveJoin('wallet_id', { as: 'wallet_name' }),
   },
 
   roles: { view: 'view_accountsmoneyout', manage: 'manage_accountsmoneyout' },
