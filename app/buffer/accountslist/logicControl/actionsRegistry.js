@@ -15,6 +15,9 @@
  * register functions under those two keys, they will never fire.
  */
 
+// Hand-written import: kept outside the auto-relations markers so build-relations.js doesn't wipe it.
+import TransferToWalletCard from "../uiControl/TransferToWalletCard";
+
 // <auto-relations:imports>
 import React from 'react';
 import { MosyCard } from "../../../components/MosyCard";
@@ -43,6 +46,18 @@ const AccountslistActions = {
   // Every one of them gets whatever's on ctx: { rows, schema, router,
   // refresh, create, update, remove, filter, setFilterValue,
   // setAdvancedQuery, setDateRange, applyFilter, clearFilterValue }.
+
+  // Hand-written (outside the auto-relations markers): allocate part of this account's balance to a wallet.
+  transfer_accountslist_to_wallet: ({ rows, refresh }) => {
+    const row = rows?.[0];
+    if (!row?.record_id) return;
+    MosyCard(
+      'Transfer to wallet',
+      React.createElement(TransferToWalletCard, { account: row, onDone: refresh, modalId: 'modal3' }),
+      true,
+      'modal3'
+    );
+  },
 
   // <auto-relations:actions>
   add_accountslist_accountsmoneyin: ({ rows, refresh }) => {

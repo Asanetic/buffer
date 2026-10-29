@@ -92,6 +92,8 @@ export const AccountslistSchema = {
     { key: 'clone', label: 'Clone Record', icon: 'copy', variant: 'outline-secondary', editOnly: true, grid: false, form: true, rowAction: false, role: 'manage_accountslist' },
     //{ key: 'filterByDate', label: 'Filter by date', icon: 'calendar', variant: 'outline-primary', type: 'action', grid: true, form: false, rowAction: false },
 
+    { key: 'transfer_accountslist_to_wallet', label: 'Transfer to wallet', icon: 'exchange', form: true, grid: false, rowAction: true, editOnly: true, role: 'manage_accountslist' },
+
     // Related-record buttons (view_<from>_<to>) are written between these two
     // lines by build-relations.js. Anything inside is regenerated on every run;
     // put hand-written actions OUTSIDE the markers.
