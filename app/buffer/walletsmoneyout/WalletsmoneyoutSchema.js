@@ -93,6 +93,8 @@ export const WalletsmoneyoutSchema = {
     { key: 'clone', label: 'Clone Record', icon: 'copy', variant: 'outline-secondary', editOnly: true, grid: false, form: true, rowAction: false, role: 'manage_walletsmoneyout' },
     //{ key: 'filterByDate', label: 'Filter by date', icon: 'calendar', variant: 'outline-primary', type: 'action', grid: true, form: false, rowAction: false },
 
+    { key: 'view_walletsmoneyout_account_transaction', label: 'View account transaction', icon: 'link', form: true, grid: false, rowAction: true, editOnly: true, role: 'view_accountsmoneyout' },
+
     // Related-record buttons (view_<from>_<to>) are written between these two
     // lines by build-relations.js. Anything inside is regenerated on every run;
     // put hand-written actions OUTSIDE the markers.

@@ -40,6 +40,28 @@ const WalletsmoneyoutActions = {
   // refresh, create, update, remove, filter, setFilterValue,
   // setAdvancedQuery, setDateRange, applyFilter, clearFilterValue }.
 
+  // Hand-written (outside the auto-relations markers): the mirror row in the other ledger, matched on link_ref.
+  view_walletsmoneyout_account_transaction: async ({ rows, router }) => {
+    const row = rows?.[0];
+    if (!row?.link_ref) {
+      MosyCard('View account transaction', React.createElement('p', { className: 'p-3 mb-0' }, 'This entry has no linked account transaction.'), true, 'modal4');
+      return;
+    }
+    const { default: AccountsmoneyoutList } = await import('../../accountsmoneyout/uiControl/AccountsmoneyoutList');
+    const fixedQuery = { linkRef: btoa(row.link_ref) };
+    // "View more" link: <entity>_mosyfilter, same format as the related-record popups above.
+    const href = `/buffer/accountsmoneyout/list?${new URLSearchParams({ accounts_money_out_mosyfilter: btoa(new URLSearchParams(fixedQuery).toString()) })}`;
+    MosyCard('', React.createElement(React.Fragment, null,
+      React.createElement(AccountsmoneyoutList, {
+        customProfilePath: '../accountsmoneyout/profile',
+        title: 'Account transaction',
+        fixedQuery,
+        hiddenActions: ['new'],
+      }),
+      React.createElement(ViewAllLink, { href, label: 'View more', onNavigate: router ? (url) => router.push(url) : undefined }),
+    ), true, 'modal4', 'mosycard_wide');
+  },
+
   // <auto-relations:actions>
   filter_walletsmoneyout_category: (ctx) => openSmartTagFilter(ctx, {
     title: 'Filter by category',
