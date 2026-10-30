@@ -7,6 +7,19 @@
 // No invented columns.
 // No invented tables.
 
+// Combined balance of every wallet/account (= sum of each one's in - out + transfers in - transfers out),
+// as at the end of the selected period (or today when no end date). Start date is ignored on purpose.
+const totalBalanceSql = (p) => {
+  const part = (tbl, where = '') => `(
+    SELECT COALESCE(SUM(x.amount), 0)
+    FROM {db}.${p}_${tbl} x
+    WHERE (:site IS NULL OR x.hive_site_id = :site)
+      AND (:to IS NULL OR x.date < DATE_ADD(:to, INTERVAL 1 DAY))${where}
+  )`;
+  return `SELECT ${part('money_in')} - ${part('money_out')}
+    + ${part('transfers', " AND x.direction = 'IN'")} - ${part('transfers', " AND x.direction = 'OUT'")} AS value`;
+};
+
 export default {
   brand: 'Dimev3',
   tz: 'Africa/Nairobi',
@@ -68,6 +81,30 @@ export default {
             col: 'amount',
             dateCol: 'date',
           },
+        },
+        {
+          id: 'accountMoneyIn',
+          label: 'Account Money In',
+          prefix: 'KES ',
+          query: { table: 'accounts_money_in', agg: 'sum', col: 'amount', dateCol: 'date' },
+        },
+        {
+          id: 'accountMoneyOut',
+          label: 'Account Money Out',
+          prefix: 'KES ',
+          query: { table: 'accounts_money_out', agg: 'sum', col: 'amount', dateCol: 'date' },
+        },
+        {
+          id: 'totalWalletBalance',
+          label: 'Total Wallet Balance',
+          prefix: 'KES ',
+          query: { sql: totalBalanceSql('wallets') },
+        },
+        {
+          id: 'totalAccountBalance',
+          label: 'Total Account Balance',
+          prefix: 'KES ',
+          query: { sql: totalBalanceSql('accounts') },
         },
         {
           id: 'walletNetMovement',
