@@ -230,6 +230,32 @@ export default {
                     OR o.date < DATE_ADD(:to, INTERVAL 1 DAY)
                   )
               ), 0)
+              +
+              COALESCE((
+                SELECT SUM(ti.amount)
+                FROM {db}.accounts_transfers ti
+                WHERE ti.account_id = a.record_id
+                  AND ti.direction = 'IN'
+                  AND (:site IS NULL OR ti.hive_site_id = :site)
+                  AND (:from IS NULL OR ti.date >= :from)
+                  AND (
+                    :to IS NULL
+                    OR ti.date < DATE_ADD(:to, INTERVAL 1 DAY)
+                  )
+              ), 0)
+              -
+              COALESCE((
+                SELECT SUM(to_.amount)
+                FROM {db}.accounts_transfers to_
+                WHERE to_.account_id = a.record_id
+                  AND to_.direction = 'OUT'
+                  AND (:site IS NULL OR to_.hive_site_id = :site)
+                  AND (:from IS NULL OR to_.date >= :from)
+                  AND (
+                    :to IS NULL
+                    OR to_.date < DATE_ADD(:to, INTERVAL 1 DAY)
+                  )
+              ), 0)
             ) AS value
           FROM {db}.accounts_list a
           WHERE (:site IS NULL OR a.hive_site_id = :site)
@@ -274,6 +300,32 @@ export default {
                   AND (
                     :to IS NULL
                     OR o.date < DATE_ADD(:to, INTERVAL 1 DAY)
+                  )
+              ), 0)
+              +
+              COALESCE((
+                SELECT SUM(ti.amount)
+                FROM {db}.wallets_transfers ti
+                WHERE ti.wallet_id = w.record_id
+                  AND ti.direction = 'IN'
+                  AND (:site IS NULL OR ti.hive_site_id = :site)
+                  AND (:from IS NULL OR ti.date >= :from)
+                  AND (
+                    :to IS NULL
+                    OR ti.date < DATE_ADD(:to, INTERVAL 1 DAY)
+                  )
+              ), 0)
+              -
+              COALESCE((
+                SELECT SUM(to_.amount)
+                FROM {db}.wallets_transfers to_
+                WHERE to_.wallet_id = w.record_id
+                  AND to_.direction = 'OUT'
+                  AND (:site IS NULL OR to_.hive_site_id = :site)
+                  AND (:from IS NULL OR to_.date >= :from)
+                  AND (
+                    :to IS NULL
+                    OR to_.date < DATE_ADD(:to, INTERVAL 1 DAY)
                   )
               ), 0)
             ) AS value
