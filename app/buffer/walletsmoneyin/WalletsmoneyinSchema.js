@@ -89,7 +89,7 @@ export const WalletsmoneyinSchema = {
     { key: 'save', label: 'Save', icon: 'save', variant: 'primary', grid: false, form: true, rowAction: false },
     { key: 'delete', label: 'Delete', icon: 'trash', variant: 'outline-danger', confirm: 'Are you sure you want to delete this wallets money in?', editOnly: true, grid: false, form: true, rowAction: true, role: 'manage_walletsmoneyin' },
     { key: 'view', label: 'View more', icon: 'edit', rowAction: true },
-    { key: 'new', label: 'New Wallets money in', icon: 'plus', variant: 'outline-primary', navigateTo: '/buffer/walletsmoneyin/profile', grid: true, form: false, rowAction: false },
+    { key: 'new', label: 'New Wallets money in', icon: 'plus', variant: 'outline-primary', navigateTo: '/buffer/walletsmoneyin/profile', grid: false, form: false, rowAction: false },
     { key: 'clone', label: 'Clone Record', icon: 'copy', variant: 'outline-secondary', editOnly: true, grid: false, form: true, rowAction: false, role: 'manage_walletsmoneyin' },
     //{ key: 'filterByDate', label: 'Filter by date', icon: 'calendar', variant: 'outline-primary', type: 'action', grid: true, form: false, rowAction: false },
 

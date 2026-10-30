@@ -89,7 +89,7 @@ export const AccountstransfersSchema = {
     { key: 'save', label: 'Save', icon: 'save', variant: 'primary', grid: false, form: true, rowAction: false },
     { key: 'delete', label: 'Delete', icon: 'trash', variant: 'outline-danger', confirm: 'Are you sure you want to delete this accounts transfer?', editOnly: true, grid: false, form: true, rowAction: true, role: 'manage_accountstransfers' },
     { key: 'view', label: 'View more', icon: 'edit', rowAction: true },
-    { key: 'new', label: 'New Accounts transfer', icon: 'plus', variant: 'outline-primary', navigateTo: '/buffer/accountstransfers/profile', grid: true, form: false, rowAction: false },
+    { key: 'new', label: 'New Accounts transfer', icon: 'plus', variant: 'outline-primary', navigateTo: '/buffer/accountstransfers/profile', grid: false, form: false, rowAction: false },
     { key: 'clone', label: 'Clone Record', icon: 'copy', variant: 'outline-secondary', editOnly: true, grid: false, form: true, rowAction: false, role: 'manage_accountstransfers' },
     //{ key: 'filterByDate', label: 'Filter by date', icon: 'calendar', variant: 'outline-primary', type: 'action', grid: true, form: false, rowAction: false },
 
