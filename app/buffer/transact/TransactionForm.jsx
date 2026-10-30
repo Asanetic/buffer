@@ -16,7 +16,6 @@ const VARIANTS = {
     accountLabel: "Account",
     partyLabel: "Received From",
     partyPlaceholder: "Client Payment",
-    notePlaceholder: "e.g. Payment for project",
     vars: { "--tf-accent": "#16a34a", "--tf-accent-dark": "#15803d", "--tf-tint": "#ecfdf3", "--tf-ring": "rgba(22,163,74,.18)" },
   },
   out: {
@@ -28,7 +27,6 @@ const VARIANTS = {
     accountLabel: "Account",
     partyLabel: "Paid To",
     partyPlaceholder: "Supermarket",
-    notePlaceholder: "e.g. Groceries and household items",
     vars: { "--tf-accent": "#f43f5e", "--tf-accent-dark": "#e11d48", "--tf-tint": "#fff1f3", "--tf-ring": "rgba(244,63,94,.18)" },
   },
   transfer: {
@@ -40,7 +38,6 @@ const VARIANTS = {
     accountLabel: "From Account",
     partyLabel: "",
     partyPlaceholder: "",
-    notePlaceholder: "e.g. Monthly savings",
     vars: { "--tf-accent": "#7c3aed", "--tf-accent-dark": "#6d28d9", "--tf-tint": "#f5f0ff", "--tf-ring": "rgba(124,58,237,.18)" },
   },
 };
@@ -120,12 +117,6 @@ const PATHS = {
     <>
       <rect x="3.5" y="5" width="17" height="15" rx="2.5" />
       <path d="M8 3v4M16 3v4M3.5 10h17" />
-    </>
-  ),
-  note: (
-    <>
-      <path d="M7 3h7l5 5v11a2 2 0 01-2 2H7a2 2 0 01-2-2V5a2 2 0 012-2z" />
-      <path d="M14 3v5h5M9 13h6M9 17h6" />
     </>
   ),
   user: (
@@ -241,7 +232,7 @@ function Select({ value, options, onChange, placeholder, invalid, creatable = fa
               <Icon name={selected.icon} size={16} />
             </span>
           )}
-          <span className={`flex-grow-1 text-truncate fw-medium ${selected ? "text-body" : "text-secondary"}`}>
+          <span className={`flex-grow-1 ml-2 text-truncate fw-medium ${selected ? "text-body" : "text-secondary"}`}>
             {selected ? selected.label : placeholder}
           </span>
           {selected?.meta && <span className="small text-secondary d-none d-sm-inline">{selected.meta}</span>}
@@ -340,7 +331,7 @@ export default function TransactionForm({
   const isWallet = kind === "wallet" && hasWallets;
   const list = isWallet ? wallets : accounts;
   const noun = isWallet ? "Wallet" : "Account";
-  const attachWallet = type === "out" && !isWallet && hasWallets; // physical account (e.g. M-Pesa) paying out of a virtual wallet (e.g. Float)
+  const attachWallet = type !== "transfer" && !isWallet && hasWallets; // physical account (e.g. M-Pesa) always posts against a virtual wallet (e.g. Float)
   const cats = categories?.[type] ?? DEFAULT_CATEGORIES[type];
   const fmt = (n) => `${currency} ${Number(n).toLocaleString("en-KE")}`;
 
@@ -351,7 +342,7 @@ export default function TransactionForm({
   const [categoryId, setCategoryId] = useState("");
   const [party, setParty] = useState("");
   const [date, setDate] = useState(today());
-  const [note, setNote] = useState("");
+  const [fees, setFees] = useState(""); // money out only: transaction fee, booked as its own row
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
@@ -366,7 +357,7 @@ export default function TransactionForm({
     setCategoryId("");
     setParty("");
     setDate(today());
-    setNote("");
+    setFees("");
     setErrors({});
     setSubmitError("");
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -412,17 +403,20 @@ export default function TransactionForm({
     const e = {};
     const amt = Number(String(amount).replace(/,/g, ""));
     const from = list.find((a) => a.id === accountId);
+    const feeAmt = type === "out" ? Number(String(fees).replace(/,/g, "")) || 0 : 0;
+    if (type === "out" && String(fees).trim() === "") e.fees = "Enter the transaction fee (0 if none)";
 
     if (!accountId) e.account = `Select ${noun.toLowerCase() === "wallet" ? "a wallet" : "an account"}`;
     if (!amt || amt <= 0) e.amount = "Enter an amount greater than 0";
-    else if (type !== "in" && from && amt > from.balance) e.amount = "Amount exceeds available balance";
+    else if (type !== "in" && from && amt + feeAmt > from.balance) e.amount = feeAmt ? "Amount plus fees exceeds available balance" : "Amount exceeds available balance";
     if (!categoryId) e.category = "Select a category";
     if (type === "transfer") {
       if (!toAccountId) e.toAccount = `Select a destination ${noun.toLowerCase()}`;
       else if (toAccountId === accountId) e.toAccount = `Choose a different ${noun.toLowerCase()}`;
     }
     const attached = wallets.find((w) => w.id === walletId);
-    if (attachWallet && attached && amt > attached.balance) e.wallet = "Amount exceeds the wallet's available balance";
+    if (attachWallet && !walletId) e.wallet = "Select a wallet";
+    else if (attachWallet && type === "out" && attached && amt + feeAmt > attached.balance) e.wallet = "Amount plus fees exceeds the wallet's available balance";
     if (!date) e.date = "Pick a date";
     setErrors(e);
     return Object.keys(e).length === 0;
@@ -444,7 +438,7 @@ export default function TransactionForm({
         categoryId,
         party: type === "transfer" ? undefined : party.trim() || undefined,
         date,
-        note: note.trim() || undefined,
+        fees: type === "out" ? Number(String(fees).replace(/,/g, "")) || 0 : undefined,
       });
       onClose?.();
     } catch (err) {
@@ -471,7 +465,7 @@ export default function TransactionForm({
         <span className="tf-badge">
           <Icon name={v.icon} size={22} />
         </span>
-        <div className="flex-grow-1 min-w-0">
+        <div className="flex-grow-1 min-w-0 ml-2">
           <h2 className="h5 fw-bold mb-0">{v.title}</h2>
           <p className="small text-secondary mb-0 text-truncate">
             <span className="d-md-none">{v.shortSubtitle}</span>
@@ -526,12 +520,12 @@ export default function TransactionForm({
         )}
 
         {attachWallet && (
-          <Field label="Attached Wallet (optional)" error={errors.wallet}>
+          <Field label="Wallet" required error={errors.wallet}>
             <Select
               value={walletId}
-              options={[{ id: "", label: "None", icon: "tag" }, ...wallets.map((w) => ({ id: w.id, label: w.name, meta: `Balance: ${fmt(w.balance)}`, icon: "cash" }))]}
+              options={[...wallets.map((w) => ({ id: w.id, label: w.name, meta: `Balance: ${fmt(w.balance)}`, icon: "cash" }))]}
               onChange={setWalletId}
-              placeholder="None — account only"
+              placeholder="Select wallet"
               invalid={!!errors.wallet}
             />
           </Field>
@@ -548,6 +542,20 @@ export default function TransactionForm({
             />
           </div>
         </Field>
+
+        {type === "out" && (
+          <Field label="Transaction Fees" required error={errors.fees}>
+            <div className={`tf-control tf-amount ${errors.fees ? "tf-invalid" : ""}`}>
+              <span className="tf-prefix">{currency}</span>
+              <input
+                inputMode="decimal"
+                value={fees}
+                onChange={(e) => setFees(e.target.value.replace(/[^\d.,]/g, ""))}
+                placeholder="0"
+              />
+            </div>
+          </Field>
+        )}
 
         <Field label="Category" required error={errors.category}>
           <Select
@@ -576,12 +584,6 @@ export default function TransactionForm({
           </div>
         </Field>
 
-        <Field label="Note (optional)">
-          <div className="tf-control">
-            <Icon name="note" className="ms-3 flex-shrink-0 text-secondary" />
-            <input value={note} onChange={(e) => setNote(e.target.value)} placeholder={v.notePlaceholder} />
-          </div>
-        </Field>
         {submitError && <div className="alert alert-danger py-2 small mb-2">{submitError}</div>}
       </div>
 

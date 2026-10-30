@@ -16,6 +16,7 @@ import {
 } from '../../../apiUtils/dataControl/dataUtils';
 
 import { mutateInputArray } from '../../beMonitor';
+import { prepareLinked, writeLinked, cascadeLinked } from '../../ledgerLink';
 import { validateRoleAccess } from '../../validateRoleAccess';
 import { processAuthToken } from '../../../auth/authManager';
 import { WalletsmoneyinSchema as schema } from './WalletsmoneyinSchema';
@@ -205,10 +206,12 @@ export async function POST(request) {
 
     const newId = magicRandomStr(7);
     const inputsArr = buildInputsArr();
+    const linkedPlan = prepareLinked(body, newId, { kind: 'wallet', dir: 'in' }); // sets body.link_ref when rows will be linked
     const mutatedDataArray = mutateInputArray(schema.entity, inputsArr, body, newId, authData);
     mutatedDataArray[recordIdCol] = newId;
 
     const result = await mosySqlInsert(schema.entity, mutatedDataArray, body);
+    await writeLinked(body, { kind: 'wallet', dir: 'in' }, linkedPlan, authData);
 
     return Response.json({
       status: 'success',
@@ -300,6 +303,7 @@ export async function DELETE(request) {
     // there's no record left to read a stored media path from.
     const existingImagePaths = await getImageFieldPaths(dataNodeValue);
 
+    await cascadeLinked(await mosyQddata(schema.entity, primkeyCol, dataNodeValue), 'in', authData);
     const result = await mosySqlDelete(schema.entity, `where ${primkeyCol}='${dataNodeValue}'`);
 
     if (result) {

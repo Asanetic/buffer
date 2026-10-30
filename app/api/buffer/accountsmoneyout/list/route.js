@@ -16,6 +16,7 @@ import {
 } from '../../../apiUtils/dataControl/dataUtils';
 
 import { mutateInputArray } from '../../beMonitor';
+import { prepareLinked, writeLinked, cascadeLinked } from '../../ledgerLink';
 import { validateRoleAccess } from '../../validateRoleAccess';
 import { processAuthToken } from '../../../auth/authManager';
 import { AccountsmoneyoutSchema as schema } from './AccountsmoneyoutSchema';
@@ -205,32 +206,12 @@ export async function POST(request) {
 
     const newId = magicRandomStr(7);
     const inputsArr = buildInputsArr();
+    const linkedPlan = prepareLinked(body, newId, { kind: 'account', dir: 'out' }); // sets body.link_ref when rows will be linked
     const mutatedDataArray = mutateInputArray(schema.entity, inputsArr, body, newId, authData);
     mutatedDataArray[recordIdCol] = newId;
 
-    // Money out of a physical account (e.g. M-Pesa) can be attached to a wallet (e.g. Float): the wallet
-    // gets the matching money-out row, both tagged with a shared link_ref so deleting one removes both.
-    const attached = String(body.wallet_id || '').trim();
-    if (attached) body.link_ref = newId;
-
     const result = await mosySqlInsert(schema.entity, mutatedDataArray, body);
-
-    if (attached) {
-      const walletRowId = magicRandomStr(7);
-      const walletBody = {
-        date: body.date,
-        amount: body.amount,
-        category: body.category,
-        ref_no: body.ref_no,
-        wallet_id: attached,
-        link_ref: newId,
-      };
-      const walletArr = mutateInputArray('wallets_money_out', {
-        date: '?', amount: '?', category: '?', ref_no: '?', wallet_id: '?', link_ref: '?',
-      }, walletBody, walletRowId, authData);
-      walletArr.record_id = walletRowId;
-      await mosySqlInsert('wallets_money_out', walletArr, walletBody);
-    }
+    await writeLinked(body, { kind: 'account', dir: 'out' }, linkedPlan, authData);
 
     return Response.json({
       status: 'success',
@@ -322,14 +303,7 @@ export async function DELETE(request) {
     // there's no record left to read a stored media path from.
     const existingImagePaths = await getImageFieldPaths(dataNodeValue);
 
-    // An attached wallet's mirror row (same link_ref) goes with it, so the two ledgers can't drift apart.
-    const existing = await mosyQddata(schema.entity, primkeyCol, dataNodeValue);
-    const ref = String(existing?.link_ref || '').replace(/[^A-Za-z0-9_-]/g, '');
-    if (ref) {
-      const site = String(authData?.hive_site_id || '').replace(/'/g, "''");
-      await mosySqlDelete('wallets_money_out', `where link_ref='${ref}'${site ? ` and hive_site_id='${site}'` : ''}`);
-    }
-
+    await cascadeLinked(await mosyQddata(schema.entity, primkeyCol, dataNodeValue), 'out', authData);
     const result = await mosySqlDelete(schema.entity, `where ${primkeyCol}='${dataNodeValue}'`);
 
     if (result) {

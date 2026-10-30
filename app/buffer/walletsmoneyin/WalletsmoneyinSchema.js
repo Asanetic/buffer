@@ -137,6 +137,7 @@ export const WalletsmoneyinSchema = {
     { key: 'category', label: 'Category', type: 'groupedSelect', endpoint: moduleApi, groupByField: 'category' },
     { key: 'ref_no', label: 'Ref No', type: 'text' },
     ...resolveField('wallet_id', { as: 'wallet_name', colSpan: 4 }),
+    { key: 'link_ref', label: 'Link Ref', type: 'text', editable: false }, // set when the row is linked to an account/fee row; never rendered
     { key: 'row_count', label: '#', type: 'number', computed: true, editable: false },
     //  live search field sample 
     // { key: 'permissions', label: 'Permissions',

@@ -10,8 +10,8 @@
 export default {
   brand: 'Dimev3',
   tz: 'Africa/Nairobi',
-  cacheMs: 15000,
-  refreshMs: 30000,
+  cacheMs: 0,
+  refreshMs: 0,
 
   layout: [
     // ==================================================

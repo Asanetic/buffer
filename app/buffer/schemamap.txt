@@ -1,6 +1,6 @@
 accounts_list:account_name|
 
-accounts_money_in:record_id|account_id:record_id:accounts_list(Account)
+accounts_money_in:record_id|account_id:record_id:accounts_list(Account),wallet_id:record_id:wallets_list(Attached wallet)
 
 accounts_money_out:record_id|account_id:record_id:accounts_list(Account),wallet_id:record_id:wallets_list(Attached wallet)
 

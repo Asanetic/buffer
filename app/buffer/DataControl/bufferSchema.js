@@ -66,7 +66,7 @@ export const globalRelations = {
     displayField: "wallet_name",
     cacheField: "wallet_name",
     label: "Attached wallet",
-    // used by: accounts_money_out, wallets_money_in, wallets_money_out, wallets_transfers
+    // used by: accounts_money_in, accounts_money_out, wallets_money_in, wallets_money_out, wallets_transfers
   },
 
 };
