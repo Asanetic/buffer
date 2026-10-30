@@ -60,42 +60,6 @@ const AccountslistActions = {
   },
 
   // <auto-relations:actions>
-  add_accountslist_accountsmoneyin: ({ rows, refresh }) => {
-    const row = rows?.[0];
-    if (!row?.record_id) return;
-    const fk = AccountsmoneyinSchema.fields?.find((f) => f.key === 'account_id');
-    openEntityCreateModal({
-      ProfileComponent: AccountsmoneyinProfile,
-      schema: AccountsmoneyinSchema,
-      title: `New Accounts money in — ${row.account_name || row.record_id}`,
-      presetValues: {
-        ...buildPresetFromRow(row, [
-          { sourceKey: 'record_id', destKey: 'account_id', destSchema: AccountsmoneyinSchema, labelValue: row.account_name },
-        ]),
-      },
-      lockedFields: ['account_id', fk?.labelKey].filter(Boolean), // mapped from the row: not shown, not editable, still saved
-      onSaved: refresh,
-    });
-  },
-
-  add_accountslist_accountsmoneyout: ({ rows, refresh }) => {
-    const row = rows?.[0];
-    if (!row?.record_id) return;
-    const fk = AccountsmoneyoutSchema.fields?.find((f) => f.key === 'account_id');
-    openEntityCreateModal({
-      ProfileComponent: AccountsmoneyoutProfile,
-      schema: AccountsmoneyoutSchema,
-      title: `New Accounts money out — ${row.account_name || row.record_id}`,
-      presetValues: {
-        ...buildPresetFromRow(row, [
-          { sourceKey: 'record_id', destKey: 'account_id', destSchema: AccountsmoneyoutSchema, labelValue: row.account_name },
-        ]),
-      },
-      lockedFields: ['account_id', fk?.labelKey].filter(Boolean), // mapped from the row: not shown, not editable, still saved
-      onSaved: refresh,
-    });
-  },
-
   add_accountslist_accountstransfers: ({ rows, refresh }) => {
     const row = rows?.[0];
     if (!row?.record_id) return;

@@ -96,8 +96,6 @@ export const WalletslistSchema = {
     // lines by build-relations.js. Anything inside is regenerated on every run;
     // put hand-written actions OUTSIDE the markers.
     // <auto-relations:actions>
-    { key: 'add_walletslist_walletsmoneyin', label: 'Add Wallets money in', icon: 'plus', form: true, grid: false, rowAction: true, editOnly: true },
-    { key: 'add_walletslist_walletsmoneyout', label: 'Add Wallets money out', icon: 'plus', form: true, grid: false, rowAction: true, editOnly: true },
     { key: 'add_walletslist_walletstransfers', label: 'Add Wallets transfer', icon: 'plus', form: true, grid: false, rowAction: false, editOnly: true },
     { key: 'filter_walletslist_wallet_type', label: 'Filter by wallet type', icon: 'tag', variant: 'outline-primary', type: 'action', grid: true, form: false, rowAction: false },
     { key: 'view_walletslist_walletsmoneyin', label: 'View Wallets money in', icon: 'list', form: true, grid: false, rowAction: true, editOnly: true, role: 'view_walletsmoneyin' },

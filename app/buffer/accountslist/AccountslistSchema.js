@@ -98,8 +98,6 @@ export const AccountslistSchema = {
     // lines by build-relations.js. Anything inside is regenerated on every run;
     // put hand-written actions OUTSIDE the markers.
     // <auto-relations:actions>
-    { key: 'add_accountslist_accountsmoneyin', label: 'Add Accounts money in', icon: 'plus', form: true, grid: false, rowAction: true, editOnly: true },
-    { key: 'add_accountslist_accountsmoneyout', label: 'Add Accounts money out', icon: 'plus', form: true, grid: false, rowAction: true, editOnly: true },
     { key: 'add_accountslist_accountstransfers', label: 'Add Accounts transfer', icon: 'plus', form: true, grid: false, rowAction: false, editOnly: true },
     { key: 'filter_accountslist_account_type', label: 'Filter by account type', icon: 'tag', variant: 'outline-primary', type: 'action', grid: true, form: false, rowAction: false },
     { key: 'view_accountslist_accountsmoneyin', label: 'View Accounts money in', icon: 'list', form: true, grid: false, rowAction: true, editOnly: true, role: 'view_accountsmoneyin' },

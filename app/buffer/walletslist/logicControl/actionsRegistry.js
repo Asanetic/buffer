@@ -45,42 +45,6 @@ const WalletslistActions = {
   // setAdvancedQuery, setDateRange, applyFilter, clearFilterValue }.
 
   // <auto-relations:actions>
-  add_walletslist_walletsmoneyin: ({ rows, refresh }) => {
-    const row = rows?.[0];
-    if (!row?.record_id) return;
-    const fk = WalletsmoneyinSchema.fields?.find((f) => f.key === 'wallet_id');
-    openEntityCreateModal({
-      ProfileComponent: WalletsmoneyinProfile,
-      schema: WalletsmoneyinSchema,
-      title: `New Wallets money in — ${row.wallet_name || row.record_id}`,
-      presetValues: {
-        ...buildPresetFromRow(row, [
-          { sourceKey: 'record_id', destKey: 'wallet_id', destSchema: WalletsmoneyinSchema, labelValue: row.wallet_name },
-        ]),
-      },
-      lockedFields: ['wallet_id', fk?.labelKey].filter(Boolean), // mapped from the row: not shown, not editable, still saved
-      onSaved: refresh,
-    });
-  },
-
-  add_walletslist_walletsmoneyout: ({ rows, refresh }) => {
-    const row = rows?.[0];
-    if (!row?.record_id) return;
-    const fk = WalletsmoneyoutSchema.fields?.find((f) => f.key === 'wallet_id');
-    openEntityCreateModal({
-      ProfileComponent: WalletsmoneyoutProfile,
-      schema: WalletsmoneyoutSchema,
-      title: `New Wallets money out — ${row.wallet_name || row.record_id}`,
-      presetValues: {
-        ...buildPresetFromRow(row, [
-          { sourceKey: 'record_id', destKey: 'wallet_id', destSchema: WalletsmoneyoutSchema, labelValue: row.wallet_name },
-        ]),
-      },
-      lockedFields: ['wallet_id', fk?.labelKey].filter(Boolean), // mapped from the row: not shown, not editable, still saved
-      onSaved: refresh,
-    });
-  },
-
   add_walletslist_walletstransfers: ({ rows, refresh }) => {
     const row = rows?.[0];
     if (!row?.record_id) return;
