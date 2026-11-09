@@ -358,48 +358,13 @@ export const bufferSidebarConfig = [
   },
 
   // ============================================================
-  // SYSTEM USERS  (added by clone-module.js)
-  // ============================================================
-
-  {
-    type: "submenu",
-    label: "System users",
-    icon: "fa fa-user",
-    roles: [],
-    items: [
-
-      {
-        label: "Add New System user",
-        href: (routes) => `${routes.buffer}/systemusers/profile`,
-        roles: []
-      },
-      {
-        label: "Manage System users",
-        href: (routes) => `${routes.buffer}/systemusers/list?setgv=sheet`,
-        roles: []
-      },
-      {
-        label: "View System users",
-        href: (routes) => `${routes.buffer}/systemusers/list?setgv=table`,
-        roles: []
-      },
-      {
-        label: "Import System users",
-        href: (routes) => `${routes.buffer}/systemusers/import`,
-        roles: []
-      }
-
-    ]
-  },
-
-  // ============================================================
   // INCOME PLAN  (added by clone-module.js)
   // ============================================================
 
   {
     type: "submenu",
     label: "Income plan",
-    icon: "fa fa-money",
+    icon: "fa fa-copy",
     roles: [],
     items: [
 
@@ -434,7 +399,7 @@ export const bufferSidebarConfig = [
   {
     type: "submenu",
     label: "Expense plan",
-    icon: "fa fa-money",
+    icon: "fa fa-minus-circle",
     roles: [],
     items: [
 
@@ -460,5 +425,40 @@ export const bufferSidebarConfig = [
       }
 
     ]
-  }
+  },
+  // ============================================================
+  // SYSTEM USERS  (added by clone-module.js)
+  // ============================================================
+
+  {
+    type: "submenu",
+    label: "System users",
+    icon: "fa fa-user",
+    roles: [],
+    items: [
+
+      {
+        label: "Add New System user",
+        href: (routes) => `${routes.buffer}/systemusers/profile`,
+        roles: []
+      },
+      {
+        label: "Manage System users",
+        href: (routes) => `${routes.buffer}/systemusers/list?setgv=sheet`,
+        roles: []
+      },
+      {
+        label: "View System users",
+        href: (routes) => `${routes.buffer}/systemusers/list?setgv=table`,
+        roles: []
+      },
+      {
+        label: "Import System users",
+        href: (routes) => `${routes.buffer}/systemusers/import`,
+        roles: []
+      }
+
+    ]
+  },
+
 ];
