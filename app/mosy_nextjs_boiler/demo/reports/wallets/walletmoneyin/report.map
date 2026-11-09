@@ -1,0 +1,19 @@
+report WalletMoneyIn "Wallet Money In"
+  by month|day|year
+  date date
+  entity wallets_money_in_report
+  role view_reports
+  currency KES
+  cache 60
+  maxrange 1200
+
+  filter wallet_id = wallet_id
+
+  money_in = sum wallets_money_in.amount "Money In" money
+  transactions = count wallets_money_in "Transactions"
+  avg_in = money_in / transactions "Average Allocation" money
+  chg = change(money_in) "Allocations vs Previous"
+
+  headline {label}: {money_in} allocated across {transactions} transactions[, {updown} {abs(chg)}% on {prev_label}].
+  remark transactions == 0 | neutral | No allocations | No incoming wallet allocations were recorded in {label}.
+  remark true | good | Wallet allocations | {label}: {money_in} allocated across {transactions} transactions.

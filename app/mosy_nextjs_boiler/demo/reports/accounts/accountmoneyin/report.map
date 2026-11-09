@@ -1,0 +1,19 @@
+report AccountMoneyIn "Account Money In"
+  by month|day|year
+  date date
+  entity accounts_money_in_report
+  role view_reports
+  currency KES
+  cache 60
+  maxrange 1200
+
+  filter account_id = account_id
+
+  money_in = sum accounts_money_in.amount "Money In" money
+  transactions = count accounts_money_in "Transactions"
+  avg_in = money_in / transactions "Average Transaction" money
+  chg = change(money_in) "Money In vs Previous"
+
+  headline {label}: {money_in} received across {transactions} transactions[, {updown} {abs(chg)}% on {prev_label}].
+  remark transactions == 0 | neutral | No money received | No incoming account transactions were recorded in {label}.
+  remark true | good | Money received | {label}: {money_in} received across {transactions} transactions.

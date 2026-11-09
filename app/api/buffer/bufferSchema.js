@@ -30,7 +30,7 @@ export const globalRelations = {
     displayField: "account_name",
     cacheField: "account_name",
     label: "Account",
-    // used by: accounts_money_in, accounts_money_out, accounts_transfers
+    // used by: accounts_money_in, accounts_money_out, accounts_transfers, income_plan, expense_plan
   },
 
   transfer_to__accounts_list: {
@@ -59,7 +59,7 @@ export const globalRelations = {
     displayField: "wallet_name",
     cacheField: "wallet_name",
     label: "Attached wallet",
-    // used by: accounts_money_in, accounts_money_out, wallets_money_in, wallets_money_out, wallets_transfers
+    // used by: accounts_money_in, accounts_money_out, wallets_money_in, wallets_money_out, wallets_transfers, income_plan, expense_plan
   },
 
 };

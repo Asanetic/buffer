@@ -97,11 +97,13 @@ export const AccountstransfersSchema = {
     // lines by build-relations.js. Anything inside is regenerated on every run;
     // put hand-written actions OUTSIDE the markers.
     // <auto-relations:actions>
-    { key: 'filter_accountstransfers_accountslist', label: 'Filter by Accounts list', icon: 'filter', variant: 'outline-primary', type: 'action', grid: true, form: false, rowAction: false, role: 'view_accountslist' },
+    { key: 'filter_accountstransfers_accountslist_account_id', label: 'Filter by Accounts list (account_id)', icon: 'filter', variant: 'outline-primary', type: 'action', grid: true, form: false, rowAction: false, role: 'view_accountslist' },
+    { key: 'filter_accountstransfers_accountslist_transfer_to', label: 'Filter by Accounts list (transfer_to)', icon: 'filter', variant: 'outline-primary', type: 'action', grid: true, form: false, rowAction: false, role: 'view_accountslist' },
     { key: 'filter_accountstransfers_category', label: 'Filter by category', icon: 'tag', variant: 'outline-primary', type: 'action', grid: true, form: false, rowAction: false },
     { key: 'filter_accountstransfers_date', label: 'Filter by date', icon: 'calendar', variant: 'outline-primary', type: 'action', grid: true, form: false, rowAction: false },
     { key: 'filter_accountstransfers_direction', label: 'Filter by direction', icon: 'tag', variant: 'outline-primary', type: 'action', grid: true, form: false, rowAction: false },
-    { key: 'view_accountstransfers_accountslist_profile', label: 'View Accounts list', icon: 'list', form: true, grid: false, rowAction: true, editOnly: true, role: 'view_accountslist' },
+    { key: 'view_accountstransfers_accountslist_profile_account_id', label: 'View Accounts list (account_id)', icon: 'list', form: true, grid: false, rowAction: true, editOnly: true, role: 'view_accountslist' },
+    { key: 'view_accountstransfers_accountslist_profile_transfer_to', label: 'View Accounts list (transfer_to)', icon: 'list', form: true, grid: false, rowAction: true, editOnly: true, role: 'view_accountslist' },
     // </auto-relations:actions>
   ],
 

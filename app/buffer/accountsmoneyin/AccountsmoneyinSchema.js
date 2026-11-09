@@ -100,7 +100,9 @@ export const AccountsmoneyinSchema = {
     { key: 'filter_accountsmoneyin_accountslist', label: 'Filter by Accounts list', icon: 'filter', variant: 'outline-primary', type: 'action', grid: true, form: false, rowAction: false, role: 'view_accountslist' },
     { key: 'filter_accountsmoneyin_category', label: 'Filter by category', icon: 'tag', variant: 'outline-primary', type: 'action', grid: true, form: false, rowAction: false },
     { key: 'filter_accountsmoneyin_date', label: 'Filter by date', icon: 'calendar', variant: 'outline-primary', type: 'action', grid: true, form: false, rowAction: false },
+    { key: 'filter_accountsmoneyin_walletslist', label: 'Filter by Wallets list', icon: 'filter', variant: 'outline-primary', type: 'action', grid: true, form: false, rowAction: false, role: 'view_walletslist' },
     { key: 'view_accountsmoneyin_accountslist_profile', label: 'View Accounts list', icon: 'list', form: true, grid: false, rowAction: true, editOnly: true, role: 'view_accountslist' },
+    { key: 'view_accountsmoneyin_walletslist_profile', label: 'View Wallets list', icon: 'list', form: true, grid: false, rowAction: true, editOnly: true, role: 'view_walletslist' },
     // </auto-relations:actions>
   ],
 

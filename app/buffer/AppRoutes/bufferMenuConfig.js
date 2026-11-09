@@ -390,5 +390,75 @@ export const bufferSidebarConfig = [
       }
 
     ]
+  },
+
+  // ============================================================
+  // INCOME PLAN  (added by clone-module.js)
+  // ============================================================
+
+  {
+    type: "submenu",
+    label: "Income plan",
+    icon: "fa fa-money",
+    roles: [],
+    items: [
+
+      {
+        label: "Add New Income plan",
+        href: (routes) => `${routes.buffer}/incomeplan/profile`,
+        roles: []
+      },
+      {
+        label: "Manage Income plan",
+        href: (routes) => `${routes.buffer}/incomeplan/list?setgv=sheet`,
+        roles: []
+      },
+      {
+        label: "View Income plan",
+        href: (routes) => `${routes.buffer}/incomeplan/list?setgv=table`,
+        roles: []
+      },
+      {
+        label: "Import Income plan",
+        href: (routes) => `${routes.buffer}/incomeplan/import`,
+        roles: []
+      }
+
+    ]
+  },
+
+  // ============================================================
+  // EXPENSE PLAN  (added by clone-module.js)
+  // ============================================================
+
+  {
+    type: "submenu",
+    label: "Expense plan",
+    icon: "fa fa-money",
+    roles: [],
+    items: [
+
+      {
+        label: "Add New Expense plan",
+        href: (routes) => `${routes.buffer}/expenseplan/profile`,
+        roles: []
+      },
+      {
+        label: "Manage Expense plan",
+        href: (routes) => `${routes.buffer}/expenseplan/list?setgv=sheet`,
+        roles: []
+      },
+      {
+        label: "View Expense plan",
+        href: (routes) => `${routes.buffer}/expenseplan/list?setgv=table`,
+        roles: []
+      },
+      {
+        label: "Import Expense plan",
+        href: (routes) => `${routes.buffer}/expenseplan/import`,
+        roles: []
+      }
+
+    ]
   }
 ];

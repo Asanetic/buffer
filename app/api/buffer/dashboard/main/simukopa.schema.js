@@ -6,9 +6,9 @@
 // No assumed loan status values.
 // No invented columns.
 // No invented tables.
-
 // Combined balance of every wallet/account (= sum of each one's in - out + transfers in - transfers out),
 // as at the end of the selected period (or today when no end date). Start date is ignored on purpose.
+
 const totalBalanceSql = (p) => {
   const part = (tbl, where = '') => `(
     SELECT COALESCE(SUM(x.amount), 0)

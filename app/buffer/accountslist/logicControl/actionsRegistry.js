@@ -26,10 +26,14 @@ import { openEntityCreateModal, buildPresetFromRow } from "../../moduleControl/U
 import AccountsmoneyinProfile from "../../accountsmoneyin/uiControl/AccountsmoneyinProfile";
 import AccountsmoneyoutProfile from "../../accountsmoneyout/uiControl/AccountsmoneyoutProfile";
 import AccountstransfersProfile from "../../accountstransfers/uiControl/AccountstransfersProfile";
+import ExpenseplanProfile from "../../expenseplan/uiControl/ExpenseplanProfile";
+import IncomeplanProfile from "../../incomeplan/uiControl/IncomeplanProfile";
 import { openSmartTagFilter } from "../../moduleControl/UiControl/smartFilterActions";
 import { AccountsmoneyinSchema } from "../../accountsmoneyin/AccountsmoneyinSchema";
 import { AccountsmoneyoutSchema } from "../../accountsmoneyout/AccountsmoneyoutSchema";
 import { AccountstransfersSchema } from "../../accountstransfers/AccountstransfersSchema";
+import { ExpenseplanSchema } from "../../expenseplan/ExpenseplanSchema";
+import { IncomeplanSchema } from "../../incomeplan/IncomeplanSchema";
 // </auto-relations:imports>
 
 
@@ -60,7 +64,43 @@ const AccountslistActions = {
   },
 
   // <auto-relations:actions>
-  add_accountslist_accountstransfers: ({ rows, refresh }) => {
+  add_accountslist_accountsmoneyin: ({ rows, refresh }) => {
+    const row = rows?.[0];
+    if (!row?.record_id) return;
+    const fk = AccountsmoneyinSchema.fields?.find((f) => f.key === 'account_id');
+    openEntityCreateModal({
+      ProfileComponent: AccountsmoneyinProfile,
+      schema: AccountsmoneyinSchema,
+      title: `New Accounts money in — ${row.account_name || row.record_id}`,
+      presetValues: {
+        ...buildPresetFromRow(row, [
+          { sourceKey: 'record_id', destKey: 'account_id', destSchema: AccountsmoneyinSchema, labelValue: row.account_name },
+        ]),
+      },
+      lockedFields: ['account_id', fk?.labelKey].filter(Boolean), // mapped from the row: not shown, not editable, still saved
+      onSaved: refresh,
+    });
+  },
+
+  add_accountslist_accountsmoneyout: ({ rows, refresh }) => {
+    const row = rows?.[0];
+    if (!row?.record_id) return;
+    const fk = AccountsmoneyoutSchema.fields?.find((f) => f.key === 'account_id');
+    openEntityCreateModal({
+      ProfileComponent: AccountsmoneyoutProfile,
+      schema: AccountsmoneyoutSchema,
+      title: `New Accounts money out — ${row.account_name || row.record_id}`,
+      presetValues: {
+        ...buildPresetFromRow(row, [
+          { sourceKey: 'record_id', destKey: 'account_id', destSchema: AccountsmoneyoutSchema, labelValue: row.account_name },
+        ]),
+      },
+      lockedFields: ['account_id', fk?.labelKey].filter(Boolean), // mapped from the row: not shown, not editable, still saved
+      onSaved: refresh,
+    });
+  },
+
+  add_accountslist_accountstransfers_account_id: ({ rows, refresh }) => {
     const row = rows?.[0];
     if (!row?.record_id) return;
     const fk = AccountstransfersSchema.fields?.find((f) => f.key === 'account_id');
@@ -71,6 +111,60 @@ const AccountslistActions = {
       presetValues: {
         ...buildPresetFromRow(row, [
           { sourceKey: 'record_id', destKey: 'account_id', destSchema: AccountstransfersSchema, labelValue: row.account_name },
+        ]),
+      },
+      lockedFields: ['account_id', fk?.labelKey].filter(Boolean), // mapped from the row: not shown, not editable, still saved
+      onSaved: refresh,
+    });
+  },
+
+  add_accountslist_accountstransfers_transfer_to: ({ rows, refresh }) => {
+    const row = rows?.[0];
+    if (!row?.record_id) return;
+    const fk = AccountstransfersSchema.fields?.find((f) => f.key === 'transfer_to');
+    openEntityCreateModal({
+      ProfileComponent: AccountstransfersProfile,
+      schema: AccountstransfersSchema,
+      title: `New Accounts transfer — ${row.account_name || row.record_id}`,
+      presetValues: {
+        ...buildPresetFromRow(row, [
+          { sourceKey: 'record_id', destKey: 'transfer_to', destSchema: AccountstransfersSchema, labelValue: row.account_name },
+        ]),
+      },
+      lockedFields: ['transfer_to', fk?.labelKey].filter(Boolean), // mapped from the row: not shown, not editable, still saved
+      onSaved: refresh,
+    });
+  },
+
+  add_accountslist_expenseplan: ({ rows, refresh }) => {
+    const row = rows?.[0];
+    if (!row?.record_id) return;
+    const fk = ExpenseplanSchema.fields?.find((f) => f.key === 'account_id');
+    openEntityCreateModal({
+      ProfileComponent: ExpenseplanProfile,
+      schema: ExpenseplanSchema,
+      title: `New Expense plan — ${row.account_name || row.record_id}`,
+      presetValues: {
+        ...buildPresetFromRow(row, [
+          { sourceKey: 'record_id', destKey: 'account_id', destSchema: ExpenseplanSchema, labelValue: row.account_name },
+        ]),
+      },
+      lockedFields: ['account_id', fk?.labelKey].filter(Boolean), // mapped from the row: not shown, not editable, still saved
+      onSaved: refresh,
+    });
+  },
+
+  add_accountslist_incomeplan: ({ rows, refresh }) => {
+    const row = rows?.[0];
+    if (!row?.record_id) return;
+    const fk = IncomeplanSchema.fields?.find((f) => f.key === 'account_id');
+    openEntityCreateModal({
+      ProfileComponent: IncomeplanProfile,
+      schema: IncomeplanSchema,
+      title: `New Income plan — ${row.account_name || row.record_id}`,
+      presetValues: {
+        ...buildPresetFromRow(row, [
+          { sourceKey: 'record_id', destKey: 'account_id', destSchema: IncomeplanSchema, labelValue: row.account_name },
         ]),
       },
       lockedFields: ['account_id', fk?.labelKey].filter(Boolean), // mapped from the row: not shown, not editable, still saved
@@ -122,7 +216,7 @@ const AccountslistActions = {
     ), true, 'modal4', 'mosycard_wide');
   },
 
-  view_accountslist_accountstransfers: async ({ rows, router }) => {
+  view_accountslist_accountstransfers_account_id: async ({ rows, router }) => {
     const row = rows?.[0];
     if (!row?.record_id) return;
     const { default: AccountstransfersList } = await import('../../accountstransfers/uiControl/AccountstransfersList');
@@ -134,6 +228,63 @@ const AccountslistActions = {
       React.createElement(AccountstransfersList, {
         customProfilePath: '../accountstransfers/profile',
         title: `Accounts transfers — ${row.account_name || row.record_id}`,
+        fixedQuery,
+        hiddenActions: ['new'],
+      }),
+      React.createElement(ViewAllLink, { href, label: 'View more', onNavigate: router ? (url) => router.push(url) : undefined }),
+    ), true, 'modal4', 'mosycard_wide');
+  },
+
+  view_accountslist_accountstransfers_transfer_to: async ({ rows, router }) => {
+    const row = rows?.[0];
+    if (!row?.record_id) return;
+    const { default: AccountstransfersList } = await import('../../accountstransfers/uiControl/AccountstransfersList');
+    const fixedQuery = { transferTo: btoa(row.record_id) };
+    // "View more" link: the list page reads <entity>_mosyfilter through MosySecureFilterEngine
+    // (value = base64 of "key=<base64 value>&..."), the same format as multiGridRows links.
+    const href = `/buffer/accountstransfers/list?${new URLSearchParams({ accounts_transfers_mosyfilter: btoa(new URLSearchParams(fixedQuery).toString()) })}`;
+    MosyCard('', React.createElement(React.Fragment, null,
+      React.createElement(AccountstransfersList, {
+        customProfilePath: '../accountstransfers/profile',
+        title: `Accounts transfers — ${row.account_name || row.record_id}`,
+        fixedQuery,
+        hiddenActions: ['new'],
+      }),
+      React.createElement(ViewAllLink, { href, label: 'View more', onNavigate: router ? (url) => router.push(url) : undefined }),
+    ), true, 'modal4', 'mosycard_wide');
+  },
+
+  view_accountslist_expenseplan: async ({ rows, router }) => {
+    const row = rows?.[0];
+    if (!row?.record_id) return;
+    const { default: ExpenseplanList } = await import('../../expenseplan/uiControl/ExpenseplanList');
+    const fixedQuery = { accountId: btoa(row.record_id) };
+    // "View more" link: the list page reads <entity>_mosyfilter through MosySecureFilterEngine
+    // (value = base64 of "key=<base64 value>&..."), the same format as multiGridRows links.
+    const href = `/buffer/expenseplan/list?${new URLSearchParams({ expense_plan_mosyfilter: btoa(new URLSearchParams(fixedQuery).toString()) })}`;
+    MosyCard('', React.createElement(React.Fragment, null,
+      React.createElement(ExpenseplanList, {
+        customProfilePath: '../expenseplan/profile',
+        title: `Expense plan — ${row.account_name || row.record_id}`,
+        fixedQuery,
+        hiddenActions: ['new'],
+      }),
+      React.createElement(ViewAllLink, { href, label: 'View more', onNavigate: router ? (url) => router.push(url) : undefined }),
+    ), true, 'modal4', 'mosycard_wide');
+  },
+
+  view_accountslist_incomeplan: async ({ rows, router }) => {
+    const row = rows?.[0];
+    if (!row?.record_id) return;
+    const { default: IncomeplanList } = await import('../../incomeplan/uiControl/IncomeplanList');
+    const fixedQuery = { accountId: btoa(row.record_id) };
+    // "View more" link: the list page reads <entity>_mosyfilter through MosySecureFilterEngine
+    // (value = base64 of "key=<base64 value>&..."), the same format as multiGridRows links.
+    const href = `/buffer/incomeplan/list?${new URLSearchParams({ income_plan_mosyfilter: btoa(new URLSearchParams(fixedQuery).toString()) })}`;
+    MosyCard('', React.createElement(React.Fragment, null,
+      React.createElement(IncomeplanList, {
+        customProfilePath: '../incomeplan/profile',
+        title: `Income plan — ${row.account_name || row.record_id}`,
         fixedQuery,
         hiddenActions: ['new'],
       }),

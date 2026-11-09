@@ -23,6 +23,7 @@ import { openSmartTagFilter } from "../../moduleControl/UiControl/smartFilterAct
 import { openSmartDateFilter } from "../../moduleControl/UiControl/smartFilterActions";
 import { openSmartMapFilter } from "../../moduleControl/UiControl/smartFilterActions";
 import { AccountslistSchema } from "../../accountslist/AccountslistSchema";
+import { WalletslistSchema } from "../../walletslist/WalletslistSchema";
 // </auto-relations:imports>
 
 
@@ -63,6 +64,15 @@ const AccountsmoneyinActions = {
     combine: true,
   }),
 
+  filter_accountsmoneyin_walletslist: (ctx) => openSmartMapFilter(ctx, {
+    title: 'Filter by wallets list',
+    searchSchema: WalletslistSchema,
+    displayField: 'wallet_name',
+    valueField: 'record_id',
+    localColumnKey: 'wallet_id',
+    combine: true,
+  }),
+
   view_accountsmoneyin_accountslist_profile: async ({ rows, router }) => {
     const row = rows?.[0];
     if (!row?.account_id) return;
@@ -75,6 +85,25 @@ const AccountsmoneyinActions = {
       React.createElement(AccountslistList, {
         customProfilePath: '../accountslist/profile',
         title: `Accounts list — ${row.account_name || ''}`,
+        fixedQuery,
+        hiddenActions: ['new'],
+      }),
+      React.createElement(ViewAllLink, { href, label: 'View more', onNavigate: router ? (url) => router.push(url) : undefined }),
+    ), true, 'modal4', 'mosycard_wide');
+  },
+
+  view_accountsmoneyin_walletslist_profile: async ({ rows, router }) => {
+    const row = rows?.[0];
+    if (!row?.wallet_id) return;
+    const { default: WalletslistList } = await import('../../walletslist/uiControl/WalletslistList');
+    const fixedQuery = { recordId: btoa(row.wallet_id) };
+    // "View more" link: the list page reads <entity>_mosyfilter through MosySecureFilterEngine
+    // (value = base64 of "key=<base64 value>&..."), the same format as multiGridRows links.
+    const href = `/buffer/walletslist/list?${new URLSearchParams({ wallets_list_mosyfilter: btoa(new URLSearchParams(fixedQuery).toString()) })}`;
+    MosyCard('', React.createElement(React.Fragment, null,
+      React.createElement(WalletslistList, {
+        customProfilePath: '../walletslist/profile',
+        title: `Wallets list — ${row.wallet_name || ''}`,
         fixedQuery,
         hiddenActions: ['new'],
       }),

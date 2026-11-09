@@ -164,3 +164,49 @@ $wallets_money_out_table_script = "
 $wallets_money_out_table = 'wallets_money_out';
 
 create_table($mysqliconn, $dbname, $wallets_money_out_table, $wallets_money_out_table_script);
+
+
+
+//=========================================================
+// INCOME PLAN TABLE
+//=========================================================
+
+$income_plan_table_script = "
+`primkey` int(11) PRIMARY KEY AUTO_INCREMENT,
+`record_id` varchar(100) NOT NULL,
+`period` varchar(100) NOT NULL,
+`revenue_source` varchar(50),
+`expected_amount` decimal(15,2) NOT NULL DEFAULT 0.00,
+`savings_amount` decimal(15,2) NOT NULL DEFAULT 0.00,
+`wallet_id` varchar(100),
+`account_id` varchar(100),
+`status` enum('Done','Pending','Cancelled') NOT NULL DEFAULT 'Pending',
+`hive_site_id` varchar(100),
+`hive_site_name` varchar(255)
+";
+
+$income_plan_table = 'income_plan';
+
+create_table($mysqliconn, $dbname, $income_plan_table, $income_plan_table_script);
+
+
+//=========================================================
+// EXPENSE PLAN TABLE
+//=========================================================
+
+$expense_plan_table_script = "
+`primkey` int(11) PRIMARY KEY AUTO_INCREMENT,
+`record_id` varchar(100) NOT NULL,
+`period` varchar(100) NOT NULL,
+`expense_name` varchar(255),
+`expected_amount` decimal(15,2) NOT NULL DEFAULT 0.00,
+`wallet_id` varchar(100),
+`account_id` varchar(100),
+`status` enum('Done','Pending','Cancelled') NOT NULL DEFAULT 'Pending',
+`hive_site_id` varchar(100),
+`hive_site_name` varchar(255)
+";
+
+$expense_plan_table = 'expense_plan';
+
+create_table($mysqliconn, $dbname, $expense_plan_table, $expense_plan_table_script);

@@ -1,0 +1,447 @@
+// Dimev3 — Device Financing Dashboard
+//
+// Uses only verified tables and columns from the supplied schema.
+// Tenant filtering is handled by the dashboard backend using the login token.
+//
+// No assumed loan status values.
+// No invented columns.
+// No invented tables.
+// Combined balance of every wallet/account (= sum of each one's in - out + transfers in - transfers out),
+// as at the end of the selected period (or today when no end date). Start date is ignored on purpose.
+
+const totalBalanceSql = (p) => {
+  const part = (tbl, where = '') => `(
+    SELECT COALESCE(SUM(x.amount), 0)
+    FROM {db}.${p}_${tbl} x
+    WHERE (:site IS NULL OR x.hive_site_id = :site)
+      AND (:to IS NULL OR x.date < DATE_ADD(:to, INTERVAL 1 DAY))${where}
+  )`;
+  return `SELECT ${part('money_in')} - ${part('money_out')}
+    + ${part('transfers', " AND x.direction = 'IN'")} - ${part('transfers', " AND x.direction = 'OUT'")} AS value`;
+};
+
+export default {
+  brand: 'Dimev3',
+  tz: 'Africa/Nairobi',
+  cacheMs: 0,
+  refreshMs: 0,
+
+  layout: [
+    // ==================================================
+    // 1. DATE FILTER
+    // ==================================================
+    {
+      kind: 'filters',
+      id: 'financialFilters',
+      date: true,
+      fields: [],
+    },
+  
+    // ==================================================
+    // 2. SUMMARY CARDS
+    // ==================================================
+    {
+      kind: 'stats',
+      id: 'cashFlowSummary',
+      items: [
+        {
+          id: 'totalAccounts',
+          label: 'Total Accounts',
+          query: {
+            table: 'accounts_list',
+            agg: 'count',
+          },
+        },
+        {
+          id: 'totalWallets',
+          label: 'Total Wallets',
+          query: {
+            table: 'wallets_list',
+            agg: 'count',
+          },
+        },
+        {
+          id: 'walletMoneyIn',
+          label: 'Wallet Money In',
+          prefix: 'KES ',
+          query: {
+            table: 'wallets_money_in',
+            agg: 'sum',
+            col: 'amount',
+            dateCol: 'date',
+          },
+        },
+        {
+          id: 'walletMoneyOut',
+          label: 'Wallet Money Out',
+          prefix: 'KES ',
+          query: {
+            table: 'wallets_money_out',
+            agg: 'sum',
+            col: 'amount',
+            dateCol: 'date',
+          },
+        },
+        {
+          id: 'accountMoneyIn',
+          label: 'Account Money In',
+          prefix: 'KES ',
+          query: { table: 'accounts_money_in', agg: 'sum', col: 'amount', dateCol: 'date' },
+        },
+        {
+          id: 'accountMoneyOut',
+          label: 'Account Money Out',
+          prefix: 'KES ',
+          query: { table: 'accounts_money_out', agg: 'sum', col: 'amount', dateCol: 'date' },
+        },
+        {
+          id: 'totalWalletBalance',
+          label: 'Total Wallet Balance',
+          prefix: 'KES ',
+          query: { sql: totalBalanceSql('wallets') },
+        },
+        {
+          id: 'totalAccountBalance',
+          label: 'Total Account Balance',
+          prefix: 'KES ',
+          query: { sql: totalBalanceSql('accounts') },
+        },
+        {
+          id: 'walletNetMovement',
+          label: 'Wallet Net Movement',
+          prefix: 'KES ',
+          query: {
+            sql: `
+              SELECT
+                (
+                  SELECT COALESCE(SUM(i.amount), 0)
+                  FROM {db}.wallets_money_in i
+                  WHERE (:site IS NULL OR i.hive_site_id = :site)
+                    AND (:from IS NULL OR i.date >= :from)
+                    AND (
+                      :to IS NULL
+                      OR i.date < DATE_ADD(:to, INTERVAL 1 DAY)
+                    )
+                )
+                -
+                (
+                  SELECT COALESCE(SUM(o.amount), 0)
+                  FROM {db}.wallets_money_out o
+                  WHERE (:site IS NULL OR o.hive_site_id = :site)
+                    AND (:from IS NULL OR o.date >= :from)
+                    AND (
+                      :to IS NULL
+                      OR o.date < DATE_ADD(:to, INTERVAL 1 DAY)
+                    )
+                ) AS value
+            `,
+          },
+        },
+        {
+          id: 'accountNetMovement',
+          label: 'Account Net Movement',
+          prefix: 'KES ',
+          query: {
+            sql: `
+              SELECT
+                (
+                  SELECT COALESCE(SUM(i.amount), 0)
+                  FROM {db}.accounts_money_in i
+                  WHERE (:site IS NULL OR i.hive_site_id = :site)
+                    AND (:from IS NULL OR i.date >= :from)
+                    AND (
+                      :to IS NULL
+                      OR i.date < DATE_ADD(:to, INTERVAL 1 DAY)
+                    )
+                )
+                -
+                (
+                  SELECT COALESCE(SUM(o.amount), 0)
+                  FROM {db}.accounts_money_out o
+                  WHERE (:site IS NULL OR o.hive_site_id = :site)
+                    AND (:from IS NULL OR o.date >= :from)
+                    AND (
+                      :to IS NULL
+                      OR o.date < DATE_ADD(:to, INTERVAL 1 DAY)
+                    )
+                ) AS value
+            `,
+          },
+        },
+        {
+          id: 'unallocatedAmount',
+          label: 'Unallocated Amount',
+          prefix: 'KES ',
+          query: {
+            sql: `
+              SELECT
+                (
+                  (
+                    SELECT COALESCE(SUM(i.amount), 0)
+                    FROM {db}.accounts_money_in i
+                    WHERE (:site IS NULL OR i.hive_site_id = :site)
+                      AND (:from IS NULL OR i.date >= :from)
+                      AND (
+                        :to IS NULL
+                        OR i.date < DATE_ADD(:to, INTERVAL 1 DAY)
+                      )
+                  )
+                  -
+                  (
+                    SELECT COALESCE(SUM(o.amount), 0)
+                    FROM {db}.accounts_money_out o
+                    WHERE (:site IS NULL OR o.hive_site_id = :site)
+                      AND (:from IS NULL OR o.date >= :from)
+                      AND (
+                        :to IS NULL
+                        OR o.date < DATE_ADD(:to, INTERVAL 1 DAY)
+                      )
+                  )
+                )
+                -
+                (
+                  (
+                    SELECT COALESCE(SUM(i.amount), 0)
+                    FROM {db}.wallets_money_in i
+                    WHERE (:site IS NULL OR i.hive_site_id = :site)
+                      AND (:from IS NULL OR i.date >= :from)
+                      AND (
+                        :to IS NULL
+                        OR i.date < DATE_ADD(:to, INTERVAL 1 DAY)
+                      )
+                  )
+                  -
+                  (
+                    SELECT COALESCE(SUM(o.amount), 0)
+                    FROM {db}.wallets_money_out o
+                    WHERE (:site IS NULL OR o.hive_site_id = :site)
+                      AND (:from IS NULL OR o.date >= :from)
+                      AND (
+                        :to IS NULL
+                        OR o.date < DATE_ADD(:to, INTERVAL 1 DAY)
+                      )
+                  )
+                ) AS value
+            `,
+          },
+        },
+      ],
+      
+    },
+  
+    // ==================================================
+    // 3. NET MOVEMENT BY ACCOUNT
+    // ==================================================
+    {
+      kind: 'chart',
+      id: 'netMovementByAccount',
+      type: 'hbar',
+      title: 'Net Movement by Account',
+      prefix: 'KES ',
+      span: 6,
+      query: {
+        sql: `
+          SELECT
+            a.account_name AS label,
+            (
+              COALESCE((
+                SELECT SUM(i.amount)
+                FROM {db}.accounts_money_in i
+                WHERE i.account_id = a.record_id
+                  AND (:site IS NULL OR i.hive_site_id = :site)
+                  AND (:from IS NULL OR i.date >= :from)
+                  AND (
+                    :to IS NULL
+                    OR i.date < DATE_ADD(:to, INTERVAL 1 DAY)
+                  )
+              ), 0)
+              -
+              COALESCE((
+                SELECT SUM(o.amount)
+                FROM {db}.accounts_money_out o
+                WHERE o.account_id = a.record_id
+                  AND (:site IS NULL OR o.hive_site_id = :site)
+                  AND (:from IS NULL OR o.date >= :from)
+                  AND (
+                    :to IS NULL
+                    OR o.date < DATE_ADD(:to, INTERVAL 1 DAY)
+                  )
+              ), 0)
+              +
+              COALESCE((
+                SELECT SUM(ti.amount)
+                FROM {db}.accounts_transfers ti
+                WHERE ti.account_id = a.record_id
+                  AND ti.direction = 'IN'
+                  AND (:site IS NULL OR ti.hive_site_id = :site)
+                  AND (:from IS NULL OR ti.date >= :from)
+                  AND (
+                    :to IS NULL
+                    OR ti.date < DATE_ADD(:to, INTERVAL 1 DAY)
+                  )
+              ), 0)
+              -
+              COALESCE((
+                SELECT SUM(to_.amount)
+                FROM {db}.accounts_transfers to_
+                WHERE to_.account_id = a.record_id
+                  AND to_.direction = 'OUT'
+                  AND (:site IS NULL OR to_.hive_site_id = :site)
+                  AND (:from IS NULL OR to_.date >= :from)
+                  AND (
+                    :to IS NULL
+                    OR to_.date < DATE_ADD(:to, INTERVAL 1 DAY)
+                  )
+              ), 0)
+            ) AS value
+          FROM {db}.accounts_list a
+          WHERE (:site IS NULL OR a.hive_site_id = :site)
+          ORDER BY value DESC
+        `,
+      },
+    },
+  
+    // ==================================================
+    // 4. NET MOVEMENT BY WALLET
+    // ==================================================
+    {
+      kind: 'chart',
+      id: 'netMovementByWallet',
+      type: 'hbar',
+      title: 'Net Movement by Wallet',
+      prefix: 'KES ',
+      span: 6,
+      query: {
+        sql: `
+          SELECT
+            w.wallet_name AS label,
+            (
+              COALESCE((
+                SELECT SUM(i.amount)
+                FROM {db}.wallets_money_in i
+                WHERE i.wallet_id = w.record_id
+                  AND (:site IS NULL OR i.hive_site_id = :site)
+                  AND (:from IS NULL OR i.date >= :from)
+                  AND (
+                    :to IS NULL
+                    OR i.date < DATE_ADD(:to, INTERVAL 1 DAY)
+                  )
+              ), 0)
+              -
+              COALESCE((
+                SELECT SUM(o.amount)
+                FROM {db}.wallets_money_out o
+                WHERE o.wallet_id = w.record_id
+                  AND (:site IS NULL OR o.hive_site_id = :site)
+                  AND (:from IS NULL OR o.date >= :from)
+                  AND (
+                    :to IS NULL
+                    OR o.date < DATE_ADD(:to, INTERVAL 1 DAY)
+                  )
+              ), 0)
+              +
+              COALESCE((
+                SELECT SUM(ti.amount)
+                FROM {db}.wallets_transfers ti
+                WHERE ti.wallet_id = w.record_id
+                  AND ti.direction = 'IN'
+                  AND (:site IS NULL OR ti.hive_site_id = :site)
+                  AND (:from IS NULL OR ti.date >= :from)
+                  AND (
+                    :to IS NULL
+                    OR ti.date < DATE_ADD(:to, INTERVAL 1 DAY)
+                  )
+              ), 0)
+              -
+              COALESCE((
+                SELECT SUM(to_.amount)
+                FROM {db}.wallets_transfers to_
+                WHERE to_.wallet_id = w.record_id
+                  AND to_.direction = 'OUT'
+                  AND (:site IS NULL OR to_.hive_site_id = :site)
+                  AND (:from IS NULL OR to_.date >= :from)
+                  AND (
+                    :to IS NULL
+                    OR to_.date < DATE_ADD(:to, INTERVAL 1 DAY)
+                  )
+              ), 0)
+            ) AS value
+          FROM {db}.wallets_list w
+          WHERE (:site IS NULL OR w.hive_site_id = :site)
+          ORDER BY value DESC
+        `,
+      },
+    },
+  
+    // ==================================================
+    // 5. MONTHLY NET MOVEMENT — ACCOUNTS ONLY
+    // ==================================================
+    {
+      kind: 'chart',
+      id: 'monthlyAccountNetMovement',
+      type: 'trend',
+      title: 'Monthly Net Movement — Accounts',
+      prefix: 'KES ',
+      span: 12,
+      query: {
+        sql: `
+          SELECT
+            movements.month_label AS label,
+            SUM(movements.amount) AS value
+          FROM (
+            SELECT
+              DATE_FORMAT(i.date, '%Y-%m') AS month_label,
+              SUM(i.amount) AS amount
+            FROM {db}.accounts_money_in i
+            WHERE (:site IS NULL OR i.hive_site_id = :site)
+              AND (:from IS NULL OR i.date >= :from)
+              AND (
+                :to IS NULL
+                OR i.date < DATE_ADD(:to, INTERVAL 1 DAY)
+              )
+            GROUP BY DATE_FORMAT(i.date, '%Y-%m')
+  
+            UNION ALL
+  
+            SELECT
+              DATE_FORMAT(o.date, '%Y-%m') AS month_label,
+              -SUM(o.amount) AS amount
+            FROM {db}.accounts_money_out o
+            WHERE (:site IS NULL OR o.hive_site_id = :site)
+              AND (:from IS NULL OR o.date >= :from)
+              AND (
+                :to IS NULL
+                OR o.date < DATE_ADD(:to, INTERVAL 1 DAY)
+              )
+            GROUP BY DATE_FORMAT(o.date, '%Y-%m')
+          ) movements
+          GROUP BY movements.month_label
+          ORDER BY movements.month_label
+        `,
+      },
+    },
+  
+    // ==================================================
+    // 6. LATEST ACCOUNTS
+    // ==================================================
+    {
+      kind: 'grid',
+      id: 'latestAccounts',
+      ref: 'latestAccounts',
+      title: 'Latest Accounts',
+      props:{
+        hiddenAccounts: ['new']
+      }
+    },
+  
+    // ==================================================
+    // 7. LATEST WALLETS
+    // ==================================================
+    {
+      kind: 'grid',
+      id: 'latestWallets',
+      ref: 'latestWallets',
+      title: 'Latest Wallets'
+    },
+  ],
+};

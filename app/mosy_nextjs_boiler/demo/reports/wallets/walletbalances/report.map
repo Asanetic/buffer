@@ -1,0 +1,23 @@
+report WalletBalances "Wallet Balances"
+  by dimension
+  date date
+  entity wallets_wallet_balances
+  role view_reports
+  currency KES
+  cache 60
+  maxrange 1200
+
+  group wallet_id
+  rows "Wallet"
+  labels wallets_list.record_id > wallet_name
+  sort balance desc
+
+  money_in = sum wallets_money_in.amount "Money In" money
+  money_out = sum wallets_money_out.amount "Money Out" money
+  transfers_in = sum wallets_transfers.amount where direction=IN "Transfers In" money
+  transfers_out = sum wallets_transfers.amount where direction=OUT "Transfers Out" money
+  balance = money_in - money_out + transfers_in - transfers_out "Net Movement" money
+
+  headline {label}: {money_in} allocated, {money_out} spent, {balance} net movement.
+  remark balance < 0 | bad | Negative movement | {label} has outgoing movement exceeding incoming movement by {abs(balance)}.
+  remark true | neutral | Wallet movement | {label}: {money_in} allocated, {money_out} spent, {transfers_in} transferred in and {transfers_out} transferred out.

@@ -100,8 +100,10 @@ export const WalletstransfersSchema = {
     { key: 'filter_walletstransfers_category', label: 'Filter by category', icon: 'tag', variant: 'outline-primary', type: 'action', grid: true, form: false, rowAction: false },
     { key: 'filter_walletstransfers_date', label: 'Filter by date', icon: 'calendar', variant: 'outline-primary', type: 'action', grid: true, form: false, rowAction: false },
     { key: 'filter_walletstransfers_direction', label: 'Filter by direction', icon: 'tag', variant: 'outline-primary', type: 'action', grid: true, form: false, rowAction: false },
-    { key: 'filter_walletstransfers_walletslist', label: 'Filter by Wallets list', icon: 'filter', variant: 'outline-primary', type: 'action', grid: true, form: false, rowAction: false, role: 'view_walletslist' },
-    { key: 'view_walletstransfers_walletslist_profile', label: 'View Wallets list', icon: 'list', form: true, grid: false, rowAction: true, editOnly: true, role: 'view_walletslist' },
+    { key: 'filter_walletstransfers_walletslist_transfer_to', label: 'Filter by Wallets list (transfer_to)', icon: 'filter', variant: 'outline-primary', type: 'action', grid: true, form: false, rowAction: false, role: 'view_walletslist' },
+    { key: 'filter_walletstransfers_walletslist_wallet_id', label: 'Filter by Wallets list (wallet_id)', icon: 'filter', variant: 'outline-primary', type: 'action', grid: true, form: false, rowAction: false, role: 'view_walletslist' },
+    { key: 'view_walletstransfers_walletslist_profile_transfer_to', label: 'View Wallets list (transfer_to)', icon: 'list', form: true, grid: false, rowAction: true, editOnly: true, role: 'view_walletslist' },
+    { key: 'view_walletstransfers_walletslist_profile_wallet_id', label: 'View Wallets list (wallet_id)', icon: 'list', form: true, grid: false, rowAction: true, editOnly: true, role: 'view_walletslist' },
     // </auto-relations:actions>
   ],
 

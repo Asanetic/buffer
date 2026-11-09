@@ -192,5 +192,15 @@
         "base": "/api/buffer/systemusers/list",
         "delete": "/api/buffer/systemusers/list/delete",
         "import": "/api/buffer/systemusers/import"
+    },
+    "incomeplan": {
+        "base": "/api/buffer/incomeplan/list",
+        "delete": "/api/buffer/incomeplan/list/delete",
+        "import": "/api/buffer/incomeplan/import"
+    },
+    "expenseplan": {
+        "base": "/api/buffer/expenseplan/list",
+        "delete": "/api/buffer/expenseplan/list/delete",
+        "import": "/api/buffer/expenseplan/import"
     }
 }

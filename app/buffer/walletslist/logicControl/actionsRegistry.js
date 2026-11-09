@@ -20,10 +20,18 @@ import React from 'react';
 import { MosyCard } from "../../../components/MosyCard";
 import ViewAllLink from "../../../components/ViewAllLink";
 import { openEntityCreateModal, buildPresetFromRow } from "../../moduleControl/UiControl/EntityCreateModal";
+import AccountsmoneyinProfile from "../../accountsmoneyin/uiControl/AccountsmoneyinProfile";
+import AccountsmoneyoutProfile from "../../accountsmoneyout/uiControl/AccountsmoneyoutProfile";
+import ExpenseplanProfile from "../../expenseplan/uiControl/ExpenseplanProfile";
+import IncomeplanProfile from "../../incomeplan/uiControl/IncomeplanProfile";
 import WalletsmoneyinProfile from "../../walletsmoneyin/uiControl/WalletsmoneyinProfile";
 import WalletsmoneyoutProfile from "../../walletsmoneyout/uiControl/WalletsmoneyoutProfile";
 import WalletstransfersProfile from "../../walletstransfers/uiControl/WalletstransfersProfile";
 import { openSmartTagFilter } from "../../moduleControl/UiControl/smartFilterActions";
+import { AccountsmoneyinSchema } from "../../accountsmoneyin/AccountsmoneyinSchema";
+import { AccountsmoneyoutSchema } from "../../accountsmoneyout/AccountsmoneyoutSchema";
+import { ExpenseplanSchema } from "../../expenseplan/ExpenseplanSchema";
+import { IncomeplanSchema } from "../../incomeplan/IncomeplanSchema";
 import { WalletsmoneyinSchema } from "../../walletsmoneyin/WalletsmoneyinSchema";
 import { WalletsmoneyoutSchema } from "../../walletsmoneyout/WalletsmoneyoutSchema";
 import { WalletstransfersSchema } from "../../walletstransfers/WalletstransfersSchema";
@@ -45,7 +53,133 @@ const WalletslistActions = {
   // setAdvancedQuery, setDateRange, applyFilter, clearFilterValue }.
 
   // <auto-relations:actions>
-  add_walletslist_walletstransfers: ({ rows, refresh }) => {
+  add_walletslist_accountsmoneyin: ({ rows, refresh }) => {
+    const row = rows?.[0];
+    if (!row?.record_id) return;
+    const fk = AccountsmoneyinSchema.fields?.find((f) => f.key === 'wallet_id');
+    openEntityCreateModal({
+      ProfileComponent: AccountsmoneyinProfile,
+      schema: AccountsmoneyinSchema,
+      title: `New Accounts money in — ${row.wallet_name || row.record_id}`,
+      presetValues: {
+        ...buildPresetFromRow(row, [
+          { sourceKey: 'record_id', destKey: 'wallet_id', destSchema: AccountsmoneyinSchema, labelValue: row.wallet_name },
+        ]),
+      },
+      lockedFields: ['wallet_id', fk?.labelKey].filter(Boolean), // mapped from the row: not shown, not editable, still saved
+      onSaved: refresh,
+    });
+  },
+
+  add_walletslist_accountsmoneyout: ({ rows, refresh }) => {
+    const row = rows?.[0];
+    if (!row?.record_id) return;
+    const fk = AccountsmoneyoutSchema.fields?.find((f) => f.key === 'wallet_id');
+    openEntityCreateModal({
+      ProfileComponent: AccountsmoneyoutProfile,
+      schema: AccountsmoneyoutSchema,
+      title: `New Accounts money out — ${row.wallet_name || row.record_id}`,
+      presetValues: {
+        ...buildPresetFromRow(row, [
+          { sourceKey: 'record_id', destKey: 'wallet_id', destSchema: AccountsmoneyoutSchema, labelValue: row.wallet_name },
+        ]),
+      },
+      lockedFields: ['wallet_id', fk?.labelKey].filter(Boolean), // mapped from the row: not shown, not editable, still saved
+      onSaved: refresh,
+    });
+  },
+
+  add_walletslist_expenseplan: ({ rows, refresh }) => {
+    const row = rows?.[0];
+    if (!row?.record_id) return;
+    const fk = ExpenseplanSchema.fields?.find((f) => f.key === 'wallet_id');
+    openEntityCreateModal({
+      ProfileComponent: ExpenseplanProfile,
+      schema: ExpenseplanSchema,
+      title: `New Expense plan — ${row.wallet_name || row.record_id}`,
+      presetValues: {
+        ...buildPresetFromRow(row, [
+          { sourceKey: 'record_id', destKey: 'wallet_id', destSchema: ExpenseplanSchema, labelValue: row.wallet_name },
+        ]),
+      },
+      lockedFields: ['wallet_id', fk?.labelKey].filter(Boolean), // mapped from the row: not shown, not editable, still saved
+      onSaved: refresh,
+    });
+  },
+
+  add_walletslist_incomeplan: ({ rows, refresh }) => {
+    const row = rows?.[0];
+    if (!row?.record_id) return;
+    const fk = IncomeplanSchema.fields?.find((f) => f.key === 'wallet_id');
+    openEntityCreateModal({
+      ProfileComponent: IncomeplanProfile,
+      schema: IncomeplanSchema,
+      title: `New Income plan — ${row.wallet_name || row.record_id}`,
+      presetValues: {
+        ...buildPresetFromRow(row, [
+          { sourceKey: 'record_id', destKey: 'wallet_id', destSchema: IncomeplanSchema, labelValue: row.wallet_name },
+        ]),
+      },
+      lockedFields: ['wallet_id', fk?.labelKey].filter(Boolean), // mapped from the row: not shown, not editable, still saved
+      onSaved: refresh,
+    });
+  },
+
+  add_walletslist_walletsmoneyin: ({ rows, refresh }) => {
+    const row = rows?.[0];
+    if (!row?.record_id) return;
+    const fk = WalletsmoneyinSchema.fields?.find((f) => f.key === 'wallet_id');
+    openEntityCreateModal({
+      ProfileComponent: WalletsmoneyinProfile,
+      schema: WalletsmoneyinSchema,
+      title: `New Wallets money in — ${row.wallet_name || row.record_id}`,
+      presetValues: {
+        ...buildPresetFromRow(row, [
+          { sourceKey: 'record_id', destKey: 'wallet_id', destSchema: WalletsmoneyinSchema, labelValue: row.wallet_name },
+        ]),
+      },
+      lockedFields: ['wallet_id', fk?.labelKey].filter(Boolean), // mapped from the row: not shown, not editable, still saved
+      onSaved: refresh,
+    });
+  },
+
+  add_walletslist_walletsmoneyout: ({ rows, refresh }) => {
+    const row = rows?.[0];
+    if (!row?.record_id) return;
+    const fk = WalletsmoneyoutSchema.fields?.find((f) => f.key === 'wallet_id');
+    openEntityCreateModal({
+      ProfileComponent: WalletsmoneyoutProfile,
+      schema: WalletsmoneyoutSchema,
+      title: `New Wallets money out — ${row.wallet_name || row.record_id}`,
+      presetValues: {
+        ...buildPresetFromRow(row, [
+          { sourceKey: 'record_id', destKey: 'wallet_id', destSchema: WalletsmoneyoutSchema, labelValue: row.wallet_name },
+        ]),
+      },
+      lockedFields: ['wallet_id', fk?.labelKey].filter(Boolean), // mapped from the row: not shown, not editable, still saved
+      onSaved: refresh,
+    });
+  },
+
+  add_walletslist_walletstransfers_transfer_to: ({ rows, refresh }) => {
+    const row = rows?.[0];
+    if (!row?.record_id) return;
+    const fk = WalletstransfersSchema.fields?.find((f) => f.key === 'transfer_to');
+    openEntityCreateModal({
+      ProfileComponent: WalletstransfersProfile,
+      schema: WalletstransfersSchema,
+      title: `New Wallets transfer — ${row.wallet_name || row.record_id}`,
+      presetValues: {
+        ...buildPresetFromRow(row, [
+          { sourceKey: 'record_id', destKey: 'transfer_to', destSchema: WalletstransfersSchema, labelValue: row.wallet_name },
+        ]),
+      },
+      lockedFields: ['transfer_to', fk?.labelKey].filter(Boolean), // mapped from the row: not shown, not editable, still saved
+      onSaved: refresh,
+    });
+  },
+
+  add_walletslist_walletstransfers_wallet_id: ({ rows, refresh }) => {
     const row = rows?.[0];
     if (!row?.record_id) return;
     const fk = WalletstransfersSchema.fields?.find((f) => f.key === 'wallet_id');
@@ -68,6 +202,82 @@ const WalletslistActions = {
     columnKey: 'wallet_type',
     combine: true,
   }),
+
+  view_walletslist_accountsmoneyin: async ({ rows, router }) => {
+    const row = rows?.[0];
+    if (!row?.record_id) return;
+    const { default: AccountsmoneyinList } = await import('../../accountsmoneyin/uiControl/AccountsmoneyinList');
+    const fixedQuery = { walletId: btoa(row.record_id) };
+    // "View more" link: the list page reads <entity>_mosyfilter through MosySecureFilterEngine
+    // (value = base64 of "key=<base64 value>&..."), the same format as multiGridRows links.
+    const href = `/buffer/accountsmoneyin/list?${new URLSearchParams({ accounts_money_in_mosyfilter: btoa(new URLSearchParams(fixedQuery).toString()) })}`;
+    MosyCard('', React.createElement(React.Fragment, null,
+      React.createElement(AccountsmoneyinList, {
+        customProfilePath: '../accountsmoneyin/profile',
+        title: `Accounts money in — ${row.wallet_name || row.record_id}`,
+        fixedQuery,
+        hiddenActions: ['new'],
+      }),
+      React.createElement(ViewAllLink, { href, label: 'View more', onNavigate: router ? (url) => router.push(url) : undefined }),
+    ), true, 'modal4', 'mosycard_wide');
+  },
+
+  view_walletslist_accountsmoneyout: async ({ rows, router }) => {
+    const row = rows?.[0];
+    if (!row?.record_id) return;
+    const { default: AccountsmoneyoutList } = await import('../../accountsmoneyout/uiControl/AccountsmoneyoutList');
+    const fixedQuery = { walletId: btoa(row.record_id) };
+    // "View more" link: the list page reads <entity>_mosyfilter through MosySecureFilterEngine
+    // (value = base64 of "key=<base64 value>&..."), the same format as multiGridRows links.
+    const href = `/buffer/accountsmoneyout/list?${new URLSearchParams({ accounts_money_out_mosyfilter: btoa(new URLSearchParams(fixedQuery).toString()) })}`;
+    MosyCard('', React.createElement(React.Fragment, null,
+      React.createElement(AccountsmoneyoutList, {
+        customProfilePath: '../accountsmoneyout/profile',
+        title: `Accounts money out — ${row.wallet_name || row.record_id}`,
+        fixedQuery,
+        hiddenActions: ['new'],
+      }),
+      React.createElement(ViewAllLink, { href, label: 'View more', onNavigate: router ? (url) => router.push(url) : undefined }),
+    ), true, 'modal4', 'mosycard_wide');
+  },
+
+  view_walletslist_expenseplan: async ({ rows, router }) => {
+    const row = rows?.[0];
+    if (!row?.record_id) return;
+    const { default: ExpenseplanList } = await import('../../expenseplan/uiControl/ExpenseplanList');
+    const fixedQuery = { walletId: btoa(row.record_id) };
+    // "View more" link: the list page reads <entity>_mosyfilter through MosySecureFilterEngine
+    // (value = base64 of "key=<base64 value>&..."), the same format as multiGridRows links.
+    const href = `/buffer/expenseplan/list?${new URLSearchParams({ expense_plan_mosyfilter: btoa(new URLSearchParams(fixedQuery).toString()) })}`;
+    MosyCard('', React.createElement(React.Fragment, null,
+      React.createElement(ExpenseplanList, {
+        customProfilePath: '../expenseplan/profile',
+        title: `Expense plan — ${row.wallet_name || row.record_id}`,
+        fixedQuery,
+        hiddenActions: ['new'],
+      }),
+      React.createElement(ViewAllLink, { href, label: 'View more', onNavigate: router ? (url) => router.push(url) : undefined }),
+    ), true, 'modal4', 'mosycard_wide');
+  },
+
+  view_walletslist_incomeplan: async ({ rows, router }) => {
+    const row = rows?.[0];
+    if (!row?.record_id) return;
+    const { default: IncomeplanList } = await import('../../incomeplan/uiControl/IncomeplanList');
+    const fixedQuery = { walletId: btoa(row.record_id) };
+    // "View more" link: the list page reads <entity>_mosyfilter through MosySecureFilterEngine
+    // (value = base64 of "key=<base64 value>&..."), the same format as multiGridRows links.
+    const href = `/buffer/incomeplan/list?${new URLSearchParams({ income_plan_mosyfilter: btoa(new URLSearchParams(fixedQuery).toString()) })}`;
+    MosyCard('', React.createElement(React.Fragment, null,
+      React.createElement(IncomeplanList, {
+        customProfilePath: '../incomeplan/profile',
+        title: `Income plan — ${row.wallet_name || row.record_id}`,
+        fixedQuery,
+        hiddenActions: ['new'],
+      }),
+      React.createElement(ViewAllLink, { href, label: 'View more', onNavigate: router ? (url) => router.push(url) : undefined }),
+    ), true, 'modal4', 'mosycard_wide');
+  },
 
   view_walletslist_walletsmoneyin: async ({ rows, router }) => {
     const row = rows?.[0];
@@ -107,7 +317,26 @@ const WalletslistActions = {
     ), true, 'modal4', 'mosycard_wide');
   },
 
-  view_walletslist_walletstransfers: async ({ rows, router }) => {
+  view_walletslist_walletstransfers_transfer_to: async ({ rows, router }) => {
+    const row = rows?.[0];
+    if (!row?.record_id) return;
+    const { default: WalletstransfersList } = await import('../../walletstransfers/uiControl/WalletstransfersList');
+    const fixedQuery = { transferTo: btoa(row.record_id) };
+    // "View more" link: the list page reads <entity>_mosyfilter through MosySecureFilterEngine
+    // (value = base64 of "key=<base64 value>&..."), the same format as multiGridRows links.
+    const href = `/buffer/walletstransfers/list?${new URLSearchParams({ wallets_transfers_mosyfilter: btoa(new URLSearchParams(fixedQuery).toString()) })}`;
+    MosyCard('', React.createElement(React.Fragment, null,
+      React.createElement(WalletstransfersList, {
+        customProfilePath: '../walletstransfers/profile',
+        title: `Wallets transfers — ${row.wallet_name || row.record_id}`,
+        fixedQuery,
+        hiddenActions: ['new'],
+      }),
+      React.createElement(ViewAllLink, { href, label: 'View more', onNavigate: router ? (url) => router.push(url) : undefined }),
+    ), true, 'modal4', 'mosycard_wide');
+  },
+
+  view_walletslist_walletstransfers_wallet_id: async ({ rows, router }) => {
     const row = rows?.[0];
     if (!row?.record_id) return;
     const { default: WalletstransfersList } = await import('../../walletstransfers/uiControl/WalletstransfersList');

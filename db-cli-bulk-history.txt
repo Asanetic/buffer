@@ -3,3 +3,4 @@ wallets_list
 accounts_transfers
 wallets_transfers
 system_users
+income_plan,expense_plan

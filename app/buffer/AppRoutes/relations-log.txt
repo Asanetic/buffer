@@ -1,7 +1,27 @@
-RELATIONS REPORT — 10/28/2026, 7:13:08 AM — app: buffer
-Modules found: 9   FK links found: 6
+RELATIONS REPORT — 11/9/2026, 6:44:07 AM — app: buffer
+Modules found: 11   FK links found: 14
 
-LINKED (6)
+LINKED (14)
+  incomeplan.wallet_id -> wallets_list
+     incomeplan: view_incomeplan_walletslist_profile
+     walletslist: view_walletslist_incomeplan
+     walletslist: add_walletslist_incomeplan
+     incomeplan: filter_incomeplan_walletslist
+  incomeplan.account_id -> accounts_list
+     incomeplan: view_incomeplan_accountslist_profile
+     accountslist: view_accountslist_incomeplan
+     accountslist: add_accountslist_incomeplan
+     incomeplan: filter_incomeplan_accountslist
+  expenseplan.wallet_id -> wallets_list
+     expenseplan: view_expenseplan_walletslist_profile
+     walletslist: view_walletslist_expenseplan
+     walletslist: add_walletslist_expenseplan
+     expenseplan: filter_expenseplan_walletslist
+  expenseplan.account_id -> accounts_list
+     expenseplan: view_expenseplan_accountslist_profile
+     accountslist: view_accountslist_expenseplan
+     accountslist: add_accountslist_expenseplan
+     expenseplan: filter_expenseplan_accountslist
   walletsmoneyin.wallet_id -> wallets_list
      walletsmoneyin: view_walletsmoneyin_walletslist_profile
      walletslist: view_walletslist_walletsmoneyin
@@ -12,6 +32,11 @@ LINKED (6)
      accountslist: view_accountslist_accountsmoneyin
      accountslist: add_accountslist_accountsmoneyin
      accountsmoneyin: filter_accountsmoneyin_accountslist
+  accountsmoneyin.wallet_id -> wallets_list
+     accountsmoneyin: view_accountsmoneyin_walletslist_profile
+     walletslist: view_walletslist_accountsmoneyin
+     walletslist: add_walletslist_accountsmoneyin
+     accountsmoneyin: filter_accountsmoneyin_walletslist
   walletsmoneyout.wallet_id -> wallets_list
      walletsmoneyout: view_walletsmoneyout_walletslist_profile
      walletslist: view_walletslist_walletsmoneyout
@@ -22,21 +47,40 @@ LINKED (6)
      accountslist: view_accountslist_accountsmoneyout
      accountslist: add_accountslist_accountsmoneyout
      accountsmoneyout: filter_accountsmoneyout_accountslist
+  accountsmoneyout.wallet_id -> wallets_list
+     accountsmoneyout: view_accountsmoneyout_walletslist_profile
+     walletslist: view_walletslist_accountsmoneyout
+     walletslist: add_walletslist_accountsmoneyout
+     accountsmoneyout: filter_accountsmoneyout_walletslist
   walletstransfers.wallet_id -> wallets_list
-     walletstransfers: view_walletstransfers_walletslist_profile
-     walletslist: view_walletslist_walletstransfers
-     walletslist: add_walletslist_walletstransfers
-     walletstransfers: filter_walletstransfers_walletslist
+     walletstransfers: view_walletstransfers_walletslist_profile_wallet_id
+     walletslist: view_walletslist_walletstransfers_wallet_id
+     walletslist: add_walletslist_walletstransfers_wallet_id
+     walletstransfers: filter_walletstransfers_walletslist_wallet_id
+  walletstransfers.transfer_to -> wallets_list
+     walletstransfers: view_walletstransfers_walletslist_profile_transfer_to
+     walletslist: view_walletslist_walletstransfers_transfer_to
+     walletslist: add_walletslist_walletstransfers_transfer_to
+     walletstransfers: filter_walletstransfers_walletslist_transfer_to
   accountstransfers.account_id -> accounts_list
-     accountstransfers: view_accountstransfers_accountslist_profile
-     accountslist: view_accountslist_accountstransfers
-     accountslist: add_accountslist_accountstransfers
-     accountstransfers: filter_accountstransfers_accountslist
+     accountstransfers: view_accountstransfers_accountslist_profile_account_id
+     accountslist: view_accountslist_accountstransfers_account_id
+     accountslist: add_accountslist_accountstransfers_account_id
+     accountstransfers: filter_accountstransfers_accountslist_account_id
+  accountstransfers.transfer_to -> accounts_list
+     accountstransfers: view_accountstransfers_accountslist_profile_transfer_to
+     accountslist: view_accountslist_accountstransfers_transfer_to
+     accountslist: add_accountslist_accountstransfers_transfer_to
+     accountstransfers: filter_accountstransfers_accountslist_transfer_to
 
 PENDING / PARTIAL (0)
   (none)
 
-COLUMN FILTERS (22)   — date columns and status/type/category-like columns
+COLUMN FILTERS (26)   — date columns and status/type/category-like columns
+  incomeplan.period [tag]   incomeplan: filter_incomeplan_period
+  incomeplan.status [tag]   incomeplan: filter_incomeplan_status
+  expenseplan.period [tag]   expenseplan: filter_expenseplan_period
+  expenseplan.status [tag]   expenseplan: filter_expenseplan_status
   systemusers.regdate [date]   systemusers: filter_systemusers_regdate
   systemusers.user_gender [tag]   systemusers: filter_systemusers_user_gender
   systemusers.last_seen [date]   systemusers: filter_systemusers_last_seen
@@ -61,10 +105,24 @@ COLUMN FILTERS (22)   — date columns and status/type/category-like columns
   accountstransfers.direction [tag]   accountstransfers: filter_accountstransfers_direction
 
 ROW MENU LIMIT (5 per module) — these are on the profile page only, not in the row dropdown
-  walletslist: add_walletslist_walletstransfers
-  accountslist: add_accountslist_accountstransfers
+  walletslist: view_walletslist_walletsmoneyout, view_walletslist_walletstransfers_transfer_to, view_walletslist_walletstransfers_wallet_id, add_walletslist_accountsmoneyin, add_walletslist_accountsmoneyout, add_walletslist_expenseplan, add_walletslist_incomeplan, add_walletslist_walletsmoneyin, add_walletslist_walletsmoneyout, add_walletslist_walletstransfers_transfer_to, add_walletslist_walletstransfers_wallet_id
+  accountslist: view_accountslist_expenseplan, view_accountslist_incomeplan, add_accountslist_accountsmoneyin, add_accountslist_accountsmoneyout, add_accountslist_accountstransfers_account_id, add_accountslist_accountstransfers_transfer_to, add_accountslist_expenseplan, add_accountslist_incomeplan
 
-FILES CHANGED (3) — previous copy of each is in <module>/_recycled/
-  app/buffer/systemusers/logicControl/actionsRegistry.js
-  app/buffer/systemusers/SystemusersSchema.js
+FILES CHANGED (17) — previous copy of each is in <module>/_recycled/
+  app/buffer/incomeplan/logicControl/actionsRegistry.js
+  app/buffer/incomeplan/IncomeplanSchema.js
+  app/buffer/expenseplan/logicControl/actionsRegistry.js
+  app/buffer/expenseplan/ExpenseplanSchema.js
+  app/buffer/walletslist/logicControl/actionsRegistry.js
+  app/buffer/walletslist/WalletslistSchema.js
+  app/buffer/accountslist/logicControl/actionsRegistry.js
   app/buffer/accountslist/AccountslistSchema.js
+  app/buffer/accountsmoneyin/logicControl/actionsRegistry.js
+  app/buffer/accountsmoneyin/AccountsmoneyinSchema.js
+  app/buffer/walletsmoneyout/logicControl/actionsRegistry.js
+  app/buffer/accountsmoneyout/logicControl/actionsRegistry.js
+  app/buffer/accountsmoneyout/AccountsmoneyoutSchema.js
+  app/buffer/walletstransfers/logicControl/actionsRegistry.js
+  app/buffer/walletstransfers/WalletstransfersSchema.js
+  app/buffer/accountstransfers/logicControl/actionsRegistry.js
+  app/buffer/accountstransfers/AccountstransfersSchema.js

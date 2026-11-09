@@ -41,12 +41,21 @@ const AccountstransfersActions = {
   // setAdvancedQuery, setDateRange, applyFilter, clearFilterValue }.
 
   // <auto-relations:actions>
-  filter_accountstransfers_accountslist: (ctx) => openSmartMapFilter(ctx, {
-    title: 'Filter by accounts list',
+  filter_accountstransfers_accountslist_account_id: (ctx) => openSmartMapFilter(ctx, {
+    title: 'Filter by accounts list (account_id)',
     searchSchema: AccountslistSchema,
     displayField: 'account_name',
     valueField: 'record_id',
     localColumnKey: 'account_id',
+    combine: true,
+  }),
+
+  filter_accountstransfers_accountslist_transfer_to: (ctx) => openSmartMapFilter(ctx, {
+    title: 'Filter by accounts list (transfer_to)',
+    searchSchema: AccountslistSchema,
+    displayField: 'account_name',
+    valueField: 'record_id',
+    localColumnKey: 'transfer_to',
     combine: true,
   }),
 
@@ -69,7 +78,7 @@ const AccountstransfersActions = {
     combine: true,
   }),
 
-  view_accountstransfers_accountslist_profile: async ({ rows, router }) => {
+  view_accountstransfers_accountslist_profile_account_id: async ({ rows, router }) => {
     const row = rows?.[0];
     if (!row?.account_id) return;
     const { default: AccountslistList } = await import('../../accountslist/uiControl/AccountslistList');
@@ -81,6 +90,25 @@ const AccountstransfersActions = {
       React.createElement(AccountslistList, {
         customProfilePath: '../accountslist/profile',
         title: `Accounts list — ${row.account_name || ''}`,
+        fixedQuery,
+        hiddenActions: ['new'],
+      }),
+      React.createElement(ViewAllLink, { href, label: 'View more', onNavigate: router ? (url) => router.push(url) : undefined }),
+    ), true, 'modal4', 'mosycard_wide');
+  },
+
+  view_accountstransfers_accountslist_profile_transfer_to: async ({ rows, router }) => {
+    const row = rows?.[0];
+    if (!row?.transfer_to) return;
+    const { default: AccountslistList } = await import('../../accountslist/uiControl/AccountslistList');
+    const fixedQuery = { recordId: btoa(row.transfer_to) };
+    // "View more" link: the list page reads <entity>_mosyfilter through MosySecureFilterEngine
+    // (value = base64 of "key=<base64 value>&..."), the same format as multiGridRows links.
+    const href = `/buffer/accountslist/list?${new URLSearchParams({ accounts_list_mosyfilter: btoa(new URLSearchParams(fixedQuery).toString()) })}`;
+    MosyCard('', React.createElement(React.Fragment, null,
+      React.createElement(AccountslistList, {
+        customProfilePath: '../accountslist/profile',
+        title: `Accounts list — ${row.transfer_to_name || ''}`,
         fixedQuery,
         hiddenActions: ['new'],
       }),

@@ -98,11 +98,19 @@ export const AccountslistSchema = {
     // lines by build-relations.js. Anything inside is regenerated on every run;
     // put hand-written actions OUTSIDE the markers.
     // <auto-relations:actions>
-    { key: 'add_accountslist_accountstransfers', label: 'Add Accounts transfer', icon: 'plus', form: true, grid: false, rowAction: false, editOnly: true },
+    { key: 'add_accountslist_accountsmoneyin', label: 'Add Accounts money in', icon: 'plus', form: true, grid: false, rowAction: false, editOnly: true },
+    { key: 'add_accountslist_accountsmoneyout', label: 'Add Accounts money out', icon: 'plus', form: true, grid: false, rowAction: false, editOnly: true },
+    { key: 'add_accountslist_accountstransfers_account_id', label: 'Add Accounts transfer (account_id)', icon: 'plus', form: true, grid: false, rowAction: false, editOnly: true },
+    { key: 'add_accountslist_accountstransfers_transfer_to', label: 'Add Accounts transfer (transfer_to)', icon: 'plus', form: true, grid: false, rowAction: false, editOnly: true },
+    { key: 'add_accountslist_expenseplan', label: 'Add Expense plan', icon: 'plus', form: true, grid: false, rowAction: false, editOnly: true },
+    { key: 'add_accountslist_incomeplan', label: 'Add Income plan', icon: 'plus', form: true, grid: false, rowAction: false, editOnly: true },
     { key: 'filter_accountslist_account_type', label: 'Filter by account type', icon: 'tag', variant: 'outline-primary', type: 'action', grid: true, form: false, rowAction: false },
     { key: 'view_accountslist_accountsmoneyin', label: 'View Accounts money in', icon: 'list', form: true, grid: false, rowAction: true, editOnly: true, role: 'view_accountsmoneyin' },
     { key: 'view_accountslist_accountsmoneyout', label: 'View Accounts money out', icon: 'list', form: true, grid: false, rowAction: true, editOnly: true, role: 'view_accountsmoneyout' },
-    { key: 'view_accountslist_accountstransfers', label: 'View Accounts transfers', icon: 'list', form: true, grid: false, rowAction: true, editOnly: true, role: 'view_accountstransfers' },
+    { key: 'view_accountslist_accountstransfers_account_id', label: 'View Accounts transfers (account_id)', icon: 'list', form: true, grid: false, rowAction: true, editOnly: true, role: 'view_accountstransfers' },
+    { key: 'view_accountslist_accountstransfers_transfer_to', label: 'View Accounts transfers (transfer_to)', icon: 'list', form: true, grid: false, rowAction: true, editOnly: true, role: 'view_accountstransfers' },
+    { key: 'view_accountslist_expenseplan', label: 'View Expense plan', icon: 'list', form: true, grid: false, rowAction: false, editOnly: true, role: 'view_expenseplan' },
+    { key: 'view_accountslist_incomeplan', label: 'View Income plan', icon: 'list', form: true, grid: false, rowAction: false, editOnly: true, role: 'view_incomeplan' },
     // </auto-relations:actions>
   ],
 

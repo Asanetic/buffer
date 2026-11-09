@@ -60,8 +60,17 @@ const WalletstransfersActions = {
     combine: true,
   }),
 
-  filter_walletstransfers_walletslist: (ctx) => openSmartMapFilter(ctx, {
-    title: 'Filter by wallets list',
+  filter_walletstransfers_walletslist_transfer_to: (ctx) => openSmartMapFilter(ctx, {
+    title: 'Filter by wallets list (transfer_to)',
+    searchSchema: WalletslistSchema,
+    displayField: 'wallet_name',
+    valueField: 'record_id',
+    localColumnKey: 'transfer_to',
+    combine: true,
+  }),
+
+  filter_walletstransfers_walletslist_wallet_id: (ctx) => openSmartMapFilter(ctx, {
+    title: 'Filter by wallets list (wallet_id)',
     searchSchema: WalletslistSchema,
     displayField: 'wallet_name',
     valueField: 'record_id',
@@ -69,7 +78,26 @@ const WalletstransfersActions = {
     combine: true,
   }),
 
-  view_walletstransfers_walletslist_profile: async ({ rows, router }) => {
+  view_walletstransfers_walletslist_profile_transfer_to: async ({ rows, router }) => {
+    const row = rows?.[0];
+    if (!row?.transfer_to) return;
+    const { default: WalletslistList } = await import('../../walletslist/uiControl/WalletslistList');
+    const fixedQuery = { recordId: btoa(row.transfer_to) };
+    // "View more" link: the list page reads <entity>_mosyfilter through MosySecureFilterEngine
+    // (value = base64 of "key=<base64 value>&..."), the same format as multiGridRows links.
+    const href = `/buffer/walletslist/list?${new URLSearchParams({ wallets_list_mosyfilter: btoa(new URLSearchParams(fixedQuery).toString()) })}`;
+    MosyCard('', React.createElement(React.Fragment, null,
+      React.createElement(WalletslistList, {
+        customProfilePath: '../walletslist/profile',
+        title: `Wallets list — ${row.transfer_to_name || ''}`,
+        fixedQuery,
+        hiddenActions: ['new'],
+      }),
+      React.createElement(ViewAllLink, { href, label: 'View more', onNavigate: router ? (url) => router.push(url) : undefined }),
+    ), true, 'modal4', 'mosycard_wide');
+  },
+
+  view_walletstransfers_walletslist_profile_wallet_id: async ({ rows, router }) => {
     const row = rows?.[0];
     if (!row?.wallet_id) return;
     const { default: WalletslistList } = await import('../../walletslist/uiControl/WalletslistList');
