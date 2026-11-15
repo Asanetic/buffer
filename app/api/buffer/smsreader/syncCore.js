@@ -14,6 +14,8 @@ export const newBatchId = () => {
   return `SYNC-${d.getFullYear()}${p2(d.getMonth() + 1)}${p2(d.getDate())}-${p2(d.getHours())}${p2(d.getMinutes())}${p2(d.getSeconds())}-${magicRandomStr(3)}`;
 };
 
+
+
 async function post(conn, kind, row, amount, category, link, hive) {
   const id = magicRandomStr(7);
   const ref = row.txn_code + (row.ref_no || row.counterparty_name ? ` ${row.ref_no || row.counterparty_name}` : "");
