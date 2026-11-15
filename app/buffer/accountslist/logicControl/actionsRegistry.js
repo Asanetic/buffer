@@ -28,12 +28,14 @@ import AccountsmoneyoutProfile from "../../accountsmoneyout/uiControl/Accountsmo
 import AccountstransfersProfile from "../../accountstransfers/uiControl/AccountstransfersProfile";
 import ExpenseplanProfile from "../../expenseplan/uiControl/ExpenseplanProfile";
 import IncomeplanProfile from "../../incomeplan/uiControl/IncomeplanProfile";
+import SmartsmsProfile from "../../smartsms/uiControl/SmartsmsProfile";
 import { openSmartTagFilter } from "../../moduleControl/UiControl/smartFilterActions";
 import { AccountsmoneyinSchema } from "../../accountsmoneyin/AccountsmoneyinSchema";
 import { AccountsmoneyoutSchema } from "../../accountsmoneyout/AccountsmoneyoutSchema";
 import { AccountstransfersSchema } from "../../accountstransfers/AccountstransfersSchema";
 import { ExpenseplanSchema } from "../../expenseplan/ExpenseplanSchema";
 import { IncomeplanSchema } from "../../incomeplan/IncomeplanSchema";
+import { SmartsmsSchema } from "../../smartsms/SmartsmsSchema";
 // </auto-relations:imports>
 
 
@@ -172,6 +174,24 @@ const AccountslistActions = {
     });
   },
 
+  add_accountslist_smartsms: ({ rows, refresh }) => {
+    const row = rows?.[0];
+    if (!row?.record_id) return;
+    const fk = SmartsmsSchema.fields?.find((f) => f.key === 'account_id');
+    openEntityCreateModal({
+      ProfileComponent: SmartsmsProfile,
+      schema: SmartsmsSchema,
+      title: `New Smartsm — ${row.account_name || row.record_id}`,
+      presetValues: {
+        ...buildPresetFromRow(row, [
+          { sourceKey: 'record_id', destKey: 'account_id', destSchema: SmartsmsSchema, labelValue: row.account_name },
+        ]),
+      },
+      lockedFields: ['account_id', fk?.labelKey].filter(Boolean), // mapped from the row: not shown, not editable, still saved
+      onSaved: refresh,
+    });
+  },
+
   filter_accountslist_account_type: (ctx) => openSmartTagFilter(ctx, {
     title: 'Filter by account type',
     columnKey: 'account_type',
@@ -285,6 +305,25 @@ const AccountslistActions = {
       React.createElement(IncomeplanList, {
         customProfilePath: '../incomeplan/profile',
         title: `Income plan — ${row.account_name || row.record_id}`,
+        fixedQuery,
+        hiddenActions: ['new'],
+      }),
+      React.createElement(ViewAllLink, { href, label: 'View more', onNavigate: router ? (url) => router.push(url) : undefined }),
+    ), true, 'modal4', 'mosycard_wide');
+  },
+
+  view_accountslist_smartsms: async ({ rows, router }) => {
+    const row = rows?.[0];
+    if (!row?.record_id) return;
+    const { default: SmartsmsList } = await import('../../smartsms/uiControl/SmartsmsList');
+    const fixedQuery = { accountId: btoa(row.record_id) };
+    // "View more" link: the list page reads <entity>_mosyfilter through MosySecureFilterEngine
+    // (value = base64 of "key=<base64 value>&..."), the same format as multiGridRows links.
+    const href = `/buffer/smartsms/list?${new URLSearchParams({ sms_inbox_mosyfilter: btoa(new URLSearchParams(fixedQuery).toString()) })}`;
+    MosyCard('', React.createElement(React.Fragment, null,
+      React.createElement(SmartsmsList, {
+        customProfilePath: '../smartsms/profile',
+        title: `Smartsms — ${row.account_name || row.record_id}`,
         fixedQuery,
         hiddenActions: ['new'],
       }),

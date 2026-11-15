@@ -4,3 +4,4 @@ accounts_transfers
 wallets_transfers
 system_users
 income_plan,expense_plan
+sms_inbox

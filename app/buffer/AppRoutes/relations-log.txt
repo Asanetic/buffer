@@ -1,7 +1,17 @@
-RELATIONS REPORT — 11/9/2026, 6:44:07 AM — app: buffer
-Modules found: 11   FK links found: 14
+RELATIONS REPORT — 11/15/2026, 5:31:29 AM — app: buffer
+Modules found: 12   FK links found: 16
 
-LINKED (14)
+LINKED (16)
+  smartsms.account_id -> accounts_list
+     smartsms: view_smartsms_accountslist_profile
+     accountslist: view_accountslist_smartsms
+     accountslist: add_accountslist_smartsms
+     smartsms: filter_smartsms_accountslist
+  smartsms.wallet_id -> wallets_list
+     smartsms: view_smartsms_walletslist_profile
+     walletslist: view_walletslist_smartsms
+     walletslist: add_walletslist_smartsms
+     smartsms: filter_smartsms_walletslist
   incomeplan.wallet_id -> wallets_list
      incomeplan: view_incomeplan_walletslist_profile
      walletslist: view_walletslist_incomeplan
@@ -76,7 +86,14 @@ LINKED (14)
 PENDING / PARTIAL (0)
   (none)
 
-COLUMN FILTERS (26)   — date columns and status/type/category-like columns
+COLUMN FILTERS (33)   — date columns and status/type/category-like columns
+  smartsms.sms_date [date]   smartsms: filter_smartsms_sms_date
+  smartsms.txn_type [tag]   smartsms: filter_smartsms_txn_type
+  smartsms.direction [tag]   smartsms: filter_smartsms_direction
+  smartsms.category [tag]   smartsms: filter_smartsms_category
+  smartsms.synced [tag]   smartsms: filter_smartsms_synced
+  smartsms.synced_type [tag]   smartsms: filter_smartsms_synced_type
+  smartsms.synced_on [date]   smartsms: filter_smartsms_synced_on
   incomeplan.period [tag]   incomeplan: filter_incomeplan_period
   incomeplan.status [tag]   incomeplan: filter_incomeplan_status
   expenseplan.period [tag]   expenseplan: filter_expenseplan_period
@@ -104,25 +121,17 @@ COLUMN FILTERS (26)   — date columns and status/type/category-like columns
   accountstransfers.category [tag]   accountstransfers: filter_accountstransfers_category
   accountstransfers.direction [tag]   accountstransfers: filter_accountstransfers_direction
 
-ROW MENU LIMIT (5 per module) — these are on the profile page only, not in the row dropdown
-  walletslist: view_walletslist_walletsmoneyout, view_walletslist_walletstransfers_transfer_to, view_walletslist_walletstransfers_wallet_id, add_walletslist_accountsmoneyin, add_walletslist_accountsmoneyout, add_walletslist_expenseplan, add_walletslist_incomeplan, add_walletslist_walletsmoneyin, add_walletslist_walletsmoneyout, add_walletslist_walletstransfers_transfer_to, add_walletslist_walletstransfers_wallet_id
-  accountslist: view_accountslist_expenseplan, view_accountslist_incomeplan, add_accountslist_accountsmoneyin, add_accountslist_accountsmoneyout, add_accountslist_accountstransfers_account_id, add_accountslist_accountstransfers_transfer_to, add_accountslist_expenseplan, add_accountslist_incomeplan
+NOT WIRED — extra schema variants of a table (the main schema of that table is used)
+  app/buffer/smsinbox/SmsinboxSchema.js
 
-FILES CHANGED (17) — previous copy of each is in <module>/_recycled/
-  app/buffer/incomeplan/logicControl/actionsRegistry.js
-  app/buffer/incomeplan/IncomeplanSchema.js
-  app/buffer/expenseplan/logicControl/actionsRegistry.js
-  app/buffer/expenseplan/ExpenseplanSchema.js
+ROW MENU LIMIT (5 per module) — these are on the profile page only, not in the row dropdown
+  walletslist: view_walletslist_walletsmoneyin, view_walletslist_walletsmoneyout, view_walletslist_walletstransfers_transfer_to, view_walletslist_walletstransfers_wallet_id, add_walletslist_accountsmoneyin, add_walletslist_accountsmoneyout, add_walletslist_expenseplan, add_walletslist_incomeplan, add_walletslist_smartsms, add_walletslist_walletsmoneyin, add_walletslist_walletsmoneyout, add_walletslist_walletstransfers_transfer_to, add_walletslist_walletstransfers_wallet_id
+  accountslist: view_accountslist_expenseplan, view_accountslist_incomeplan, view_accountslist_smartsms, add_accountslist_accountsmoneyin, add_accountslist_accountsmoneyout, add_accountslist_accountstransfers_account_id, add_accountslist_accountstransfers_transfer_to, add_accountslist_expenseplan, add_accountslist_incomeplan, add_accountslist_smartsms
+
+FILES CHANGED (6) — previous copy of each is in <module>/_recycled/
+  app/buffer/smartsms/logicControl/actionsRegistry.js
+  app/buffer/smartsms/SmartsmsSchema.js
   app/buffer/walletslist/logicControl/actionsRegistry.js
   app/buffer/walletslist/WalletslistSchema.js
   app/buffer/accountslist/logicControl/actionsRegistry.js
   app/buffer/accountslist/AccountslistSchema.js
-  app/buffer/accountsmoneyin/logicControl/actionsRegistry.js
-  app/buffer/accountsmoneyin/AccountsmoneyinSchema.js
-  app/buffer/walletsmoneyout/logicControl/actionsRegistry.js
-  app/buffer/accountsmoneyout/logicControl/actionsRegistry.js
-  app/buffer/accountsmoneyout/AccountsmoneyoutSchema.js
-  app/buffer/walletstransfers/logicControl/actionsRegistry.js
-  app/buffer/walletstransfers/WalletstransfersSchema.js
-  app/buffer/accountstransfers/logicControl/actionsRegistry.js
-  app/buffer/accountstransfers/AccountstransfersSchema.js

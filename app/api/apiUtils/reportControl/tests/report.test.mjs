@@ -36,10 +36,10 @@ test('schema filter applies only where mapped', async () => {
   assert.deepEqual(rows(r), [['2026-05', 2, 1000, 600], ['2026-06', 2, 3000, 500]]);
 });
 
-test('no start date -> default window, snapped to whole months', async () => {
+test('no start date -> window is capped, but the report begins at the first period with data', async () => {
   const r = await run(monthly, {});
   assert.equal(r.meta.start, '2025-09-01'); // now 2026-09-15 minus 366d = 2025-09-14 -> snapped to 2025-09-01
-  assert.ok(r.data.length >= 12);
+  assert.equal(r.data[0]._group, '2026-05'); // first data month, not the start of the window
 });
 
 test('dimension report: split credit shares an opportunity across its activity types', async () => {

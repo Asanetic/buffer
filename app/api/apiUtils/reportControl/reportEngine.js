@@ -244,7 +244,8 @@ export async function mosySecureReport({
     let keys = [...byBucket.keys()];
     if (timeMode) {
       const have = keys.filter(Boolean).sort();
-      const from = start || (have.length ? keyToDate(bucket, have[0]) : null);
+      // no date picked: begin at the first period that has data (not the default window), so a first transaction in October starts the report at October
+      const from = !startRaw && have.length ? keyToDate(bucket, have[0]) : (start || null);
       let to = endExcl;
       if (!to && have.length) { const lastD = keyToDate(bucket, have[have.length - 1]); to = bucket === 'year' ? new Date(Date.UTC(lastD.getUTCFullYear() + 1, 0, 1)) : bucket === 'month' ? new Date(Date.UTC(lastD.getUTCFullYear(), lastD.getUTCMonth() + 1, 1)) : new Date(Date.UTC(lastD.getUTCFullYear(), lastD.getUTCMonth(), lastD.getUTCDate() + 1)); }
       keys = from && to ? enumerate(bucket, from, to, schema.maxBuckets || 400) : have;

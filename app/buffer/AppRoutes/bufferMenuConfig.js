@@ -148,6 +148,30 @@ export const bufferSidebarConfig = [
     ]
   },
 
+  {
+    type: "submenu",
+    label: "Smart Transactions",
+    icon: "fa fa-comments",
+    roles: [],
+    items: [
+      { label: "Manage Transactions", href: (routes) => `${routes.buffer}/smartsms/list?setgv=sheet`, roles: [] },
+      { label: "View Transactions", href: (routes) => `${routes.buffer}/smartsms/list?setgv=table`, roles: [] }
+    ]
+  },
+
+  {
+    type: "submenu",
+    label: "Smart Settings",
+    icon: "fa fa-cog",
+    roles: [],
+    items: [
+      { label: "Skip Keywords", href: (routes) => `${routes.buffer}/smartskipwords/list?setgv=sheet`, roles: [] },
+      { label: "Category Keywords", href: (routes) => `${routes.buffer}/smartcategorywords/list?setgv=sheet`, roles: [] },
+      { label: "Account Keywords", href: (routes) => `${routes.buffer}/smartaccountwords/list?setgv=sheet`, roles: [] },
+      { label: "Wallet Keywords", href: (routes) => `${routes.buffer}/smartwalletwords/list?setgv=sheet`, roles: [] }
+    ]
+  },
+
   // ============================================================
   // WALLETS  (menu group - added by clone-module.js)
   // ============================================================
@@ -459,6 +483,5 @@ export const bufferSidebarConfig = [
       }
 
     ]
-  },
-
+  }
 ];

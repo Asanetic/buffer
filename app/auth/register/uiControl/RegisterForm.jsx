@@ -5,6 +5,7 @@ import Link from 'next/link'
 
 import { SAuthCreateAccount } from '../../AuthUtils';
 import saAuthConfigs from '../../featureConfig/saAuthConfigs';
+import { linkPath } from '../../../appConfigs/hiveRoutes';
 import {mosyRightNow, magicRandomStr} from '../../../MosyUtils/hiveUtils';
 import { MosyAlertCard, MosyNotify } from '../../../MosyUtils/ActionModals';
 import { useSearchParams, useRouter } from 'next/navigation';
@@ -51,13 +52,13 @@ function LoginBox({ loginBgImg, appLogo, appName, loginUrl = '#' }) {
                    
           onYes: () => {
           
-            router.push(`${saAuthConfigs.loginUrl}`)
+            router.push(linkPath(saAuthConfigs.loginUrl))
           
           },
 
           onNo: () => {
           
-            router.push(`${saAuthConfigs.loginUrl}`)
+            router.push(linkPath(saAuthConfigs.loginUrl))
           
           }          
 

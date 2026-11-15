@@ -202,5 +202,42 @@
         "base": "/api/buffer/expenseplan/list",
         "delete": "/api/buffer/expenseplan/list/delete",
         "import": "/api/buffer/expenseplan/import"
+    },
+    "smartsms": {
+        "base": "/api/buffer/smartsms/list",
+        "delete": "/api/buffer/smartsms/list/delete",
+        "import": "/api/buffer/smartsms/import"
+    },
+    "smsinbox": {
+        "base": "/api/buffer/smsinbox/list",
+        "delete": "/api/buffer/smsinbox/list/delete",
+        "import": "/api/buffer/smsinbox/import"
+    },
+    "smsreader": {
+        "reapply": "/api/buffer/smsreader/reapply",
+        "deleteall": "/api/buffer/smsreader/deleteall",
+        "analyse": "/api/buffer/smsreader/analyse",
+        "sync": "/api/buffer/smsreader/sync",
+        "undo": "/api/buffer/smsreader/undo"
+    },
+    "smartskipwords": {
+        "base": "/api/buffer/smartskipwords/list",
+        "delete": "/api/buffer/smartskipwords/list/delete",
+        "import": "/api/buffer/smartskipwords/import"
+    },
+    "smartcategorywords": {
+        "base": "/api/buffer/smartcategorywords/list",
+        "delete": "/api/buffer/smartcategorywords/list/delete",
+        "import": "/api/buffer/smartcategorywords/import"
+    },
+    "smartaccountwords": {
+        "base": "/api/buffer/smartaccountwords/list",
+        "delete": "/api/buffer/smartaccountwords/list/delete",
+        "import": "/api/buffer/smartaccountwords/import"
+    },
+    "smartwalletwords": {
+        "base": "/api/buffer/smartwalletwords/list",
+        "delete": "/api/buffer/smartwalletwords/list/delete",
+        "import": "/api/buffer/smartwalletwords/import"
     }
 }

@@ -24,6 +24,7 @@ import AccountsmoneyinProfile from "../../accountsmoneyin/uiControl/Accountsmone
 import AccountsmoneyoutProfile from "../../accountsmoneyout/uiControl/AccountsmoneyoutProfile";
 import ExpenseplanProfile from "../../expenseplan/uiControl/ExpenseplanProfile";
 import IncomeplanProfile from "../../incomeplan/uiControl/IncomeplanProfile";
+import SmartsmsProfile from "../../smartsms/uiControl/SmartsmsProfile";
 import WalletsmoneyinProfile from "../../walletsmoneyin/uiControl/WalletsmoneyinProfile";
 import WalletsmoneyoutProfile from "../../walletsmoneyout/uiControl/WalletsmoneyoutProfile";
 import WalletstransfersProfile from "../../walletstransfers/uiControl/WalletstransfersProfile";
@@ -32,6 +33,7 @@ import { AccountsmoneyinSchema } from "../../accountsmoneyin/AccountsmoneyinSche
 import { AccountsmoneyoutSchema } from "../../accountsmoneyout/AccountsmoneyoutSchema";
 import { ExpenseplanSchema } from "../../expenseplan/ExpenseplanSchema";
 import { IncomeplanSchema } from "../../incomeplan/IncomeplanSchema";
+import { SmartsmsSchema } from "../../smartsms/SmartsmsSchema";
 import { WalletsmoneyinSchema } from "../../walletsmoneyin/WalletsmoneyinSchema";
 import { WalletsmoneyoutSchema } from "../../walletsmoneyout/WalletsmoneyoutSchema";
 import { WalletstransfersSchema } from "../../walletstransfers/WalletstransfersSchema";
@@ -118,6 +120,24 @@ const WalletslistActions = {
       presetValues: {
         ...buildPresetFromRow(row, [
           { sourceKey: 'record_id', destKey: 'wallet_id', destSchema: IncomeplanSchema, labelValue: row.wallet_name },
+        ]),
+      },
+      lockedFields: ['wallet_id', fk?.labelKey].filter(Boolean), // mapped from the row: not shown, not editable, still saved
+      onSaved: refresh,
+    });
+  },
+
+  add_walletslist_smartsms: ({ rows, refresh }) => {
+    const row = rows?.[0];
+    if (!row?.record_id) return;
+    const fk = SmartsmsSchema.fields?.find((f) => f.key === 'wallet_id');
+    openEntityCreateModal({
+      ProfileComponent: SmartsmsProfile,
+      schema: SmartsmsSchema,
+      title: `New Smartsm — ${row.wallet_name || row.record_id}`,
+      presetValues: {
+        ...buildPresetFromRow(row, [
+          { sourceKey: 'record_id', destKey: 'wallet_id', destSchema: SmartsmsSchema, labelValue: row.wallet_name },
         ]),
       },
       lockedFields: ['wallet_id', fk?.labelKey].filter(Boolean), // mapped from the row: not shown, not editable, still saved
@@ -272,6 +292,25 @@ const WalletslistActions = {
       React.createElement(IncomeplanList, {
         customProfilePath: '../incomeplan/profile',
         title: `Income plan — ${row.wallet_name || row.record_id}`,
+        fixedQuery,
+        hiddenActions: ['new'],
+      }),
+      React.createElement(ViewAllLink, { href, label: 'View more', onNavigate: router ? (url) => router.push(url) : undefined }),
+    ), true, 'modal4', 'mosycard_wide');
+  },
+
+  view_walletslist_smartsms: async ({ rows, router }) => {
+    const row = rows?.[0];
+    if (!row?.record_id) return;
+    const { default: SmartsmsList } = await import('../../smartsms/uiControl/SmartsmsList');
+    const fixedQuery = { walletId: btoa(row.record_id) };
+    // "View more" link: the list page reads <entity>_mosyfilter through MosySecureFilterEngine
+    // (value = base64 of "key=<base64 value>&..."), the same format as multiGridRows links.
+    const href = `/buffer/smartsms/list?${new URLSearchParams({ sms_inbox_mosyfilter: btoa(new URLSearchParams(fixedQuery).toString()) })}`;
+    MosyCard('', React.createElement(React.Fragment, null,
+      React.createElement(SmartsmsList, {
+        customProfilePath: '../smartsms/profile',
+        title: `Smartsms — ${row.wallet_name || row.record_id}`,
         fixedQuery,
         hiddenActions: ['new'],
       }),

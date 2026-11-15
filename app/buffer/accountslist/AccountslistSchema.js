@@ -104,6 +104,7 @@ export const AccountslistSchema = {
     { key: 'add_accountslist_accountstransfers_transfer_to', label: 'Add Accounts transfer (transfer_to)', icon: 'plus', form: true, grid: false, rowAction: false, editOnly: true },
     { key: 'add_accountslist_expenseplan', label: 'Add Expense plan', icon: 'plus', form: true, grid: false, rowAction: false, editOnly: true },
     { key: 'add_accountslist_incomeplan', label: 'Add Income plan', icon: 'plus', form: true, grid: false, rowAction: false, editOnly: true },
+    { key: 'add_accountslist_smartsms', label: 'Add Smartsm', icon: 'plus', form: true, grid: false, rowAction: false, editOnly: true },
     { key: 'filter_accountslist_account_type', label: 'Filter by account type', icon: 'tag', variant: 'outline-primary', type: 'action', grid: true, form: false, rowAction: false },
     { key: 'view_accountslist_accountsmoneyin', label: 'View Accounts money in', icon: 'list', form: true, grid: false, rowAction: true, editOnly: true, role: 'view_accountsmoneyin' },
     { key: 'view_accountslist_accountsmoneyout', label: 'View Accounts money out', icon: 'list', form: true, grid: false, rowAction: true, editOnly: true, role: 'view_accountsmoneyout' },
@@ -111,6 +112,7 @@ export const AccountslistSchema = {
     { key: 'view_accountslist_accountstransfers_transfer_to', label: 'View Accounts transfers (transfer_to)', icon: 'list', form: true, grid: false, rowAction: true, editOnly: true, role: 'view_accountstransfers' },
     { key: 'view_accountslist_expenseplan', label: 'View Expense plan', icon: 'list', form: true, grid: false, rowAction: false, editOnly: true, role: 'view_expenseplan' },
     { key: 'view_accountslist_incomeplan', label: 'View Income plan', icon: 'list', form: true, grid: false, rowAction: false, editOnly: true, role: 'view_incomeplan' },
+    { key: 'view_accountslist_smartsms', label: 'View Smartsms', icon: 'list', form: true, grid: false, rowAction: false, editOnly: true, role: 'view_smartsms' },
     // </auto-relations:actions>
   ],
 

@@ -26,3 +26,6 @@ hotspots.php
 openaiimg_gen.php
 openaitts.php
 video.php
+
+# secrets
+.env
