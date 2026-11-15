@@ -210,14 +210,17 @@ export async function reapplyForHive(conn, hive) {
      WHERE hive_site_id=? AND synced IN ('pending','skipped') AND (synced_id IS NULL OR synced_id='')`,
     [hive.id]
   );
-  let skipped = 0, pending = 0;
+  let skipped = 0, pending = 0, changed = 0, uncategorised = 0;
   for (const r of rows) {
     const { out: e } = await enrich(conn, kw, hive, cache, { sender: r.sender, body: r.body, counterparty: r.counterparty_name }, r.direction);
+    const next = { category: e.category || r.category, account_id: e.account_id || r.account_id, wallet_id: e.wallet_id || r.wallet_id };
+    if (next.category !== (r.category || "") || next.account_id !== (r.account_id || "") || next.wallet_id !== (r.wallet_id || "")) changed++;
+    if (e.synced !== "skipped" && !next.category) uncategorised++;
     await conn.execute(
       `UPDATE \`${activeDB}\`.\`sms_inbox\` SET synced=?, skip_reason=?, rule_id=?, category=?, account_id=?, wallet_id=? WHERE primkey=?`,
       [e.synced, e.skip_reason, e.rule_id, e.category || r.category, e.account_id || r.account_id, e.wallet_id || r.wallet_id, r.primkey]
     );
     e.synced === "skipped" ? skipped++ : pending++;
   }
-  return { processed: rows.length, pending, skipped };
+  return { processed: rows.length, pending, skipped, changed, uncategorised };
 }

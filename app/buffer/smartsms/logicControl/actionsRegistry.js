@@ -69,6 +69,9 @@ const postSafe = async (url, data = {}) => {
   }
 };
 
+const fmtWhen = (d) => { const x = new Date(d); return isNaN(x) ? '' : x.toLocaleString(undefined, { day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit' }); };
+const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
+
 const runDeleteMessages = async (includeSynced, refresh) => {
   MosyNotify({ message: 'Deleting transactions...', addTimer: false });
   const res = await mosyPostData({ url: smsReaderApi.deleteall, data: { include_synced: includeSynced } });
@@ -125,8 +128,10 @@ ${res.pending} transaction(s) waiting to be synced.`
       showBusy('Re-applying rules', 'Checking your waiting transactions again.');
       const res = await postSafe(smsReaderApi.reapply);
       if (res.status !== 'success') return showFailure(res, run);
-      showSuccess({ title: 'Rules re-applied', text: `${res.processed} transaction(s) checked.
-${res.pending} pending, ${res.skipped} skipped.`, onDone: refresh });
+      const lines = [`${plural(res.processed, 'transaction', 'transactions')} checked, ${res.changed ?? 0} updated.`];
+      if (res.uncategorised) lines.push(`${plural(res.uncategorised, 'transaction still has', 'transactions still have')} no category. Add a keyword for ${res.uncategorised === 1 ? 'it' : 'them'} under Smart Settings.`);
+      if (res.skipped) lines.push(`${res.skipped} skipped by your skip keywords.`);
+      showSuccess({ title: 'Rules re-applied', text: lines.join('\n'), note: { title: 'Already synced transactions were not changed.', sub: 'To update those, Undo Sync first, then re-apply and sync again.' }, onDone: refresh });
     };
     openCard(React.createElement(SmsDialog, {
       tone: 'primary',
@@ -150,16 +155,16 @@ ${res.pending} pending, ${res.skipped} skipped.`, onDone: refresh });
       showSuccess({
         title: res.synced ? 'Sync complete' : 'Nothing to sync',
         text: res.synced
-          ? `${res.synced} transaction(s) added to money in / out${res.fees ? `, plus ${res.fees} transaction fee(s)` : ''}.${res.batch ? `\nSignature: ${res.batch}` : ''}`
+          ? `${plural(res.synced, 'transaction', 'transactions')} added to money in / out${res.fees ? `, plus ${plural(res.fees, 'transaction fee', 'transaction fees')}` : ''}.`
           : 'No transactions with a code, amount, date and in/out are waiting.',
-        note: res.synced ? { title: 'Made a mistake? Use Undo Sync.', sub: 'It removes everything added by that sync in one go.' } : undefined,
+        note: res.synced ? { title: 'Made a mistake? Use Undo Sync.', sub: `This sync is saved as ${fmtWhen(new Date())}. Undo removes everything it added in one go.` } : undefined,
         onDone: refresh,
       });
     };
     openCard(React.createElement(SmsDialog, {
       tone: 'success', icon: 'exchange', title: 'Sync Transactions',
       text: 'Add all waiting transactions to account and wallet money in / out?\nNew transactions are also synced automatically when they arrive.',
-      note: { title: 'Every sync is stamped with its date and time.', sub: 'You can undo any sync later.' },
+      note: { title: 'Check the category, account and wallet first.', sub: 'Every sync is stamped with its date and time, so you can undo it later.' },
       actions: [
         { label: 'Cancel', variant: 'ghost', onClick: () => closeMosyModal() },
         { label: 'Sync Now', icon: 'check', variant: 'success', onClick: run },
@@ -173,19 +178,28 @@ ${res.pending} pending, ${res.skipped} skipped.`, onDone: refresh });
       showBusy('Undoing sync', 'Removing the entries this sync created.');
       const res = await postSafe(smsReaderApi.undo, { batch });
       if (res.status !== 'success') return showFailure(res, () => undo(batch));
-      showSuccess({ title: 'Sync undone', text: `${res.messages} transaction(s) are waiting again.\n${res.removed} money entr${res.removed === 1 ? 'y' : 'ies'} removed.`, onDone: refresh });
+      showSuccess({ title: 'Sync undone', text: `${plural(res.messages, 'transaction is', 'transactions are')} waiting again.\n${plural(res.removed, 'money entry', 'money entries')} removed.`, note: { title: 'Fix your keywords, then Re-apply Rules and Sync Now.', sub: 'Everything is back to waiting so the new rules can be used.' }, onDone: refresh });
     };
+    const confirmAll = () => openCard(React.createElement(SmsDialog, {
+      tone: 'danger', icon: 'trash', title: 'Undo every sync?',
+      text: 'All money in / out entries created from your transactions will be removed.',
+      note: { title: 'Your own manual entries are never touched.', sub: 'Every transaction goes back to waiting.' },
+      actions: [
+        { label: 'Cancel', variant: 'ghost', onClick: () => closeMosyModal() },
+        { label: 'Yes, undo all', icon: 'trash', variant: 'danger', onClick: () => undo('all') },
+      ],
+    }));
     const res = await postSafe(smsReaderApi.undo, { list: true });
     if (res.status !== 'success') return showFailure(res);
     const batches = res.batches || [];
     if (!batches.length) return showSuccess({ title: 'Nothing to undo', text: 'No transactions have been synced yet.' });
     openCard(React.createElement(SmsDialog, {
       tone: 'warning', icon: 'undo', title: 'Undo a Sync',
-      text: 'Pick the sync to reverse.',
+      text: batches.length > 5 ? 'Pick the sync to reverse (latest 5 shown).' : 'Pick the sync to reverse.',
       note: { title: 'Only entries created by that sync are removed.', sub: 'Your own manual money in / out is never touched.' },
       actions: [
-        ...batches.slice(0, 5).map((b) => ({ label: `${new Date(b.synced_on).toLocaleString()} (${b.messages})`, icon: 'undo', variant: 'warn', onClick: () => undo(b.batch) })),
-        { label: 'Undo ALL syncs', icon: 'trash', variant: 'danger', onClick: () => undo('all') },
+        ...batches.slice(0, 5).map((b) => ({ label: `${fmtWhen(b.synced_on)} · ${plural(b.messages, 'transaction', 'transactions')}`, icon: 'undo', variant: 'warn', onClick: () => undo(b.batch) })),
+        { label: 'Undo ALL syncs', icon: 'trash', variant: 'danger', onClick: confirmAll },
         { label: 'Cancel', variant: 'ghost', onClick: () => closeMosyModal() },
       ],
     }));
