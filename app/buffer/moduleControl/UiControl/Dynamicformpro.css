@@ -212,14 +212,29 @@
   @media (max-width: 767px) {
     .dfp-title { font-size: 24px; }
     .dfp-header { margin-bottom: 18px; }
-    .dfp-actions { width: 100%; display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
-    .dfp-actions .dfp-btn,
-    .dfp-actions .dfp-more-wrap,
-    .dfp-actions .dfp-more-wrap .dfp-btn { width: 100%; }
+    /* top action row: content-width rounded buttons side by side on one line (Back · New · List · Delete) */
+    .dfp-actions { position: relative; width: 100%; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; }
+    .dfp-actions-stack { flex-direction: column; flex-wrap: nowrap; gap: 8px; }
+    .dfp-actions-line { display: flex; flex-wrap: wrap; justify-content: flex-start; gap: 8px; }
+    .dfp-actions-line:first-child:not(:only-child) { justify-content: space-between; }
+    .dfp-actions .dfp-btn { width: auto; flex: 0 1 auto; height: 40px; padding: 0 14px; gap: 7px; font-size: 14px; font-weight: 500; border-radius: 12px; box-shadow: 0 2px 6px rgba(15, 23, 42, .12); }
+    .dfp-actions .dfp-btn i { font-size: 14px; }
+    .dfp-actions .dfp-btn-danger { background: #fff5f4; border-color: #f4a39b; color: #d92d20; }
+    .dfp-actions .dfp-more-wrap { position: static; }
+    .dfp-actions .dfp-more-panel { left: 8px; right: 8px; width: auto; min-width: 0; }
     .dfp-btn { height: 44px; padding: 0 14px; }
     .dfp-card { padding: 16px 14px 4px; }
     .dfp-scope .dyn-field { padding-left: 0 !important; padding-right: 0 !important; }
     .dfp-footer { display: grid; grid-template-columns: repeat(2, 1fr); }
     .dfp-footer .dfp-btn { min-width: 0; width: 100%; }
     .dfp-footer .dfp-btn:only-child { grid-column: 1 / -1; }
+  }
+  /* phone: the second action line never wraps — a hidden twin is measured, overflow goes under the dots button */
+  @media (max-width: 767px) {
+    .dfp-actions-line.dfp-fit { position: relative; flex-wrap: nowrap; justify-content: flex-start; }
+    .dfp-actions-measure { position: absolute; left: 0; top: 0; height: 0; overflow: hidden; visibility: hidden; pointer-events: none; display: flex; gap: 8px; white-space: nowrap; }
+    .dfp-actions-measure .dfp-btn { height: 40px; padding: 0 14px; gap: 7px; font-size: 14px; font-weight: 500; }
+    .dfp-actions-line .dfp-btn-more, .dfp-actions-measure .dfp-btn-more { padding: 0 14px; }
+    .dfp-actions-line.dfp-fit .dfp-more-wrap { margin-left: auto; position: static; }
+    .dfp-actions-line.dfp-fit .dfp-more-panel { left: 0; right: 0; width: auto; min-width: 0; }
   }

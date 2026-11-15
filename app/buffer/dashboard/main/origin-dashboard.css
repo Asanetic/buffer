@@ -423,3 +423,32 @@ a.od-attn-row:hover { background: rgba(148, 163, 184, .12); color: inherit; }
 .od-attn-go { display: inline-flex; align-items: center; gap: 4px; flex: none; font-size: 12px; font-weight: 700; color: var(--od-navy-2); padding: 4px 10px; border-radius: 999px; background: rgba(148, 163, 184, .16); transition: background .15s, transform .2s; }
 a.od-attn-row:hover .od-attn-go { background: rgba(148, 163, 184, .3); transform: translateX(2px); }
 .od-attn-clear { display: flex; align-items: center; gap: 8px; margin: 0; padding: 6px 2px; color: #16a34a; font-weight: 600; }
+
+/* chip calendar icon (all sizes) */
+.od-chip { display: inline-flex; align-items: center; justify-content: center; gap: 7px; }
+.od-chip-ic { flex: none; }
+
+/* ---------- Mobile filter card: pill chips 3-up, From / To / Time / Apply on one row ---------- */
+@media (max-width: 575px) {
+  .od-filters { gap: 22px 8px; padding: 16px 14px 14px; align-items: flex-end; }
+  .od-presets { flex: 1 1 100%; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  .od-dashboard .od-chip { height: 32px; padding: 0 10px; gap: 5px; border-radius: 999px; font-size: 11px; font-weight: 500; white-space: nowrap; border-color: var(--od-btn, #7a1f8f); color: var(--od-btn, #7a1f8f); background: #fff; }
+  .od-dashboard .od-chip.active, .od-dashboard .od-chip.active:hover { background: var(--od-btn, #7a1f8f); border-color: var(--od-btn, #7a1f8f); color: var(--od-btn-txt, #fff); font-weight: 600; }
+  .od-chip-ic { width: 12px; height: 12px; }
+  .od-field { flex: 1 1 0; min-width: 0; }
+  .od-dashboard .od-input, .od-dashboard .od-input[type=datetime-local] { width: 100%; min-width: 0; height: 34px; padding: 0 10px; border-radius: 12px; font-size: 11.5px; }
+  .od-check { flex: none; gap: 5px; height: 34px; font-size: 11.5px; }
+  .od-check-long { display: none; }
+  .od-dashboard .od-apply { flex: none; height: 34px; padding: 0 20px; border-radius: 999px; font-size: 12px; }
+}
+
+/* phone: smaller greeting */
+@media (max-width: 575px) {
+  .od-dashboard .od-title { font-size: 19px; }
+  .od-dashboard .od-eyebrow { font-size: 9.5px; margin-bottom: 4px; }
+}
+
+/* phone: subtle border on stat cards */
+@media (max-width: 575px) {
+  .od-dashboard .od-stat { border: 1px solid #e3e7ef; }
+}

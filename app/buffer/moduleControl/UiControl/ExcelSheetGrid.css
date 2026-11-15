@@ -260,3 +260,66 @@ select.sgx-editor { padding: 0 6px; }
 .sgx-more-item:hover:not(:disabled) { background: #f2f4f7; }
 .sgx-more-item:disabled { opacity: .45; cursor: not-allowed; }
 .sgx-more-item.sgx-btn-danger { color: #b42318; }
+
+/* ════════════════════════════════════════════════════════════════
+   Mobile look & feel (phones) — big title, rounded icon-button row,
+   pill search, tinted "unsaved / Save" bar, roomy sticky-first-column
+   table, touch-size pager. Pure CSS: desktop is untouched.
+   ════════════════════════════════════════════════════════════════ */
+@media (max-width: 640px) {
+  .sgx-root { --sgx-row-h: 38px; --sgx-radius: 18px; padding: 12px 10px 16px; gap: 10px; font-size: 13.5px; }
+
+  /* title block + Save pill */
+  .sgx-header { flex-direction: row; flex-wrap: wrap; align-items: center; gap: 10px; }
+  .sgx-header > div:first-child { flex: 1 1 100%; min-width: 0; }   /* title + description get their own full line */
+  .sgx-title { font-size: 23px; font-weight: 800; line-height: 1.1; }
+  .sgx-description { font-size: 12.5px; line-height: 1.4; margin-top: 4px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .sgx-btn-save { width: auto; flex: none; margin-left: auto; height: 38px; padding: 0 14px; border-radius: 10px; box-shadow: 0 6px 14px -6px var(--sgx-accent); }
+
+  /* the toolbar card dissolves into a row of rounded icon buttons */
+  .sgx-card > .sgx-toolbar:first-child { padding: 0 0 4px; border: 0; gap: 8px; flex-wrap: wrap; }
+  .sgx-card { background: transparent; border: 0; box-shadow: none; overflow: visible; }
+  .sgx-btn { height: 38px; min-width: 38px; padding: 0 10px; border-radius: 11px; border-color: #dfe3ee; background: #fff; box-shadow: 0 2px 6px rgba(15, 23, 42, .06); font-size: 13.5px; font-weight: 600; }
+  .sgx-btn i { font-size: 15px; }
+  /* theme colour must win over the white mobile .sgx-btn above (same specificity, so double the class) */
+  .sgx-btn.sgx-btn-solid { background: var(--sgx-accent); border-color: var(--sgx-accent); color: var(--sgx-accent-contrast); box-shadow: 0 8px 16px -8px var(--sgx-accent); }
+  .sgx-btn.sgx-btn-solid:hover:not(:disabled) { background: var(--sgx-accent-dark); border-color: var(--sgx-accent-dark); }
+  .sgx-btn-solid span { display: inline; }      /* primary action (Add) keeps its label */
+  .sgx-btn-danger { background: #fff; }
+  /* More menu: drop down full width under the button row so it can never run off-screen */
+  .sgx-card > .sgx-toolbar:first-child { position: relative; }
+  .sgx-more-wrap { position: static; }
+  .sgx-more-panel { left: 0; right: 0; top: 100%; min-width: 0; width: auto; max-height: 60vh; overflow-y: auto; border-radius: 14px; box-shadow: 0 12px 30px rgba(15, 23, 42, .18); }
+  .sgx-more-item { padding: 9px 12px; font-size: 13.5px; }
+
+  /* "N unsaved" becomes the tinted status bar under the buttons */
+  .sgx-toolbar-info {
+    order: 10; flex-basis: 100%; margin: 4px 0 0; padding: 8px 12px; border-radius: 11px;
+    background: var(--sgx-accent-soft); color: var(--sgx-text); font-size: 13px; font-weight: 600;
+  }
+
+  /* pill search */
+  .sgx-toolbar-search { padding: 0; border: 0; gap: 8px; flex-wrap: nowrap; }
+  .sgx-search { flex: 1 1 auto; min-width: 0; }
+  .sgx-search-input { height: 40px; padding-left: 36px; border-radius: 11px; border-color: #dfe3ee; font-size: 13.5px; box-shadow: 0 2px 6px rgba(15, 23, 42, .05); }
+  .sgx-search-icon { left: 12px; font-size: 14px; }
+  .sgx-btn-go span, .sgx-toolbar-search .sgx-btn span { display: none; }
+  .sgx-active-filters { flex-basis: 100%; }
+
+  /* table card */
+  .sgx-sheet-box, .sgx-wrap { border-radius: 16px; }
+  .sgx-sheet-box { background: #fff; border: 1px solid var(--sgx-border); box-shadow: 0 4px 14px rgba(15, 23, 42, .06); overflow: hidden; margin-top: 4px; }
+  .sgx-wrap { max-height: 64vh; }
+  .sgx-table thead th { height: 38px; font-size: 12.5px; font-weight: 700; color: var(--sgx-text); padding: 0 8px; }
+  .sgx-cell { min-width: 100px; }
+  .sgx-cell-text { padding: 0 8px; font-size: 13px; }
+  .sgx-table .sgx-rownum { width: 44px; min-width: 44px; }
+  .sgx-check { width: 17px; height: 17px; border-radius: 6px; }
+  .sgx-cell.is-active { box-shadow: inset 0 0 0 2px var(--sgx-accent); border-radius: 8px; }
+  .sgx-row.is-selected .sgx-cell, .sgx-row.is-selected .sgx-rownum { background: var(--sgx-accent-soft) !important; }
+
+  /* pager */
+  .sgx-pagination-wrap { padding: 10px 0 0; border: 0; }
+  .sgx-pagination-wrap button, .sgx-pagination-wrap select, .sgx-pagination-wrap .page-link { min-height: 36px; min-width: 36px; border-radius: 10px; font-size: 13px; }
+  .sgx-footer { display: none; }
+}

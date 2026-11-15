@@ -1,5 +1,7 @@
 'use client';
-import { useMemo, useRef, useState, useEffect } from 'react';
+import { useMemo, useRef, useState, useEffect, useLayoutEffect } from 'react';
+import './Dynamicformpro.css'; // styles travel with this folder (plug-and-play)
+import PopoverMenuList from './PopoverMenuList';
 import { FIELD_COMPONENTS, TextInput } from './FormFields';
 import { FormSection, FieldGroup, formLayoutStyles } from './FormLayout';
 import mosyThemeConfigs from '../../../appConfigs/mosyTheme';
@@ -45,6 +47,131 @@ function ActionButton({ action, disabled, onClick }) {
       {action.icon && <i className={`fa fa-${action.icon}`}></i>}
       <span>{action.label}</span>
     </button>
+  );
+}
+
+// Top action row. Desktop: first MAX_VISIBLE_ACTIONS buttons, rest under "More".
+// Phones: Back / Delete on the first line; every other action on a second line that fits as many as it can and puts the rest under three dots.
+const PRIMARY_KEYS = ['back', 'delete'];
+
+// One-line action strip for phones: shows as many buttons as fit (measured from a hidden twin of each), the rest go under a three-dots button.
+function FitLine({ actions, disabled }) {
+  const wrapRef = useRef(null);
+  const measureRef = useRef(null);
+  const moreRef = useRef(null);
+  const [fit, setFit] = useState(actions.length);
+  const [open, setOpen] = useState(false);
+  const sig = actions.map((a) => `${a.key}:${a.label}`).join('|');
+
+  useLayoutEffect(() => {
+    const wrap = wrapRef.current;
+    const meas = measureRef.current;
+    if (!wrap || !meas) return undefined;
+    const GAP = 8;
+    const run = () => {
+      const avail = wrap.clientWidth;
+      const w = [...meas.children].map((el) => el.offsetWidth);
+      const moreW = w.pop() || 0;
+      const total = w.reduce((a, b) => a + b, 0) + GAP * Math.max(0, w.length - 1);
+      if (!avail || total <= avail) return setFit(w.length);
+      let used = 0, k = 0;
+      for (let i = 0; i < w.length; i += 1) {
+        used += w[i] + GAP;
+        if (used + moreW <= avail) k = i + 1; else break;
+      }
+      setFit(k);
+    };
+    run();
+    const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(run) : null;
+    ro?.observe(wrap);
+    window.addEventListener('resize', run);
+    return () => { ro?.disconnect(); window.removeEventListener('resize', run); };
+  }, [sig]);
+
+  useEffect(() => {
+    if (!open) return undefined;
+    const close = (e) => { if (moreRef.current && !moreRef.current.contains(e.target)) setOpen(false); };
+    document.addEventListener('mousedown', close);
+    return () => document.removeEventListener('mousedown', close);
+  }, [open]);
+
+  const overflow = actions.slice(fit);
+  return (
+    <div className="dfp-actions-line dfp-fit" ref={wrapRef}>
+      {actions.slice(0, fit).map((a) => <ActionButton key={a.key} action={a} disabled={disabled} />)}
+      {overflow.length > 0 && (
+        <div className="dfp-more-wrap" ref={moreRef}>
+          <button type="button" className="dfp-btn dfp-btn-more" onClick={() => setOpen((o) => !o)} aria-expanded={open} aria-label="More actions" title="More">
+            <i className="fa fa-ellipsis-h"></i><span>More</span>
+          </button>
+          {open && (
+            <div className="dfp-more-panel sgm-panel">
+              <PopoverMenuList items={overflow} disabled={disabled} onPick={(a) => { setOpen(false); a.onClick(); }} />
+            </div>
+          )}
+        </div>
+      )}
+      <div className="dfp-actions-measure" ref={measureRef} aria-hidden="true">
+        {actions.map((a) => <ActionButton key={a.key} action={a} disabled />)}
+        <span className="dfp-btn dfp-btn-more"><i className="fa fa-ellipsis-h"></i><span>More</span></span>
+      </div>
+    </div>
+  );
+}
+
+function ActionsRow({ actions, disabled }) {
+  const moreRef = useRef(null);
+  const [phone, setPhone] = useState(false);
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.matchMedia) return undefined;
+    const mq = window.matchMedia('(max-width: 767px)');
+    const on = () => setPhone(mq.matches);
+    on();
+    mq.addEventListener?.('change', on);
+    return () => mq.removeEventListener?.('change', on);
+  }, []);
+
+  useEffect(() => {
+    if (!open) return undefined;
+    const close = (e) => { if (moreRef.current && !moreRef.current.contains(e.target)) setOpen(false); };
+    document.addEventListener('mousedown', close);
+    return () => document.removeEventListener('mousedown', close);
+  }, [open]);
+
+  if (!actions.length) return null;
+
+  if (phone) {
+    const first = actions.filter((a) => PRIMARY_KEYS.includes(a.key));
+    const rest = actions.filter((a) => !PRIMARY_KEYS.includes(a.key));
+    return (
+      <div className="dfp-actions dfp-actions-stack">
+        {first.length > 0 && <div className="dfp-actions-line">{first.map((a) => <ActionButton key={a.key} action={a} disabled={disabled} />)}</div>}
+        {rest.length > 0 && <FitLine actions={rest} disabled={disabled} />}
+      </div>
+    );
+  }
+
+  const visible = actions.slice(0, MAX_VISIBLE_ACTIONS);
+  const overflow = actions.slice(MAX_VISIBLE_ACTIONS);
+  return (
+    <div className="dfp-actions">
+      {visible.map((a) => <ActionButton key={a.key} action={a} disabled={disabled} />)}
+      {overflow.length > 0 && (
+        <div className="dfp-more-wrap" ref={moreRef}>
+          <button type="button" className="dfp-btn" onClick={() => setOpen((o) => !o)} aria-expanded={open}>
+            <i className="fa fa-ellipsis-h"></i>
+            <span>More</span>
+          </button>
+          {open && (
+            <div className="dfp-more-panel sgm-panel">
+              <PopoverMenuList items={overflow} disabled={disabled} onPick={(a) => { setOpen(false); a.onClick(); }} />
+            </div>
+          )}
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -123,9 +250,7 @@ export default function DynamicFormPro({ controller, title, eyebrow, description
     .filter((a) => !hiddenActions.includes(a.key));
   const cloneAction = profileActions.find((a) => a.key === 'clone') || null;
   const topActions = profileActions.filter((a) => a.key !== 'clone');
-  const visibleActions = topActions.slice(0, MAX_VISIBLE_ACTIONS);
-  const overflowActions = topActions.slice(MAX_VISIBLE_ACTIONS);
-
+  
   const saveActionDef = schema?.profileActions?.find((a) => a.form && (a.key === 'save' || a.key === 'submit'));
   const submitAction = saveActionDef
     ? {
@@ -215,45 +340,7 @@ export default function DynamicFormPro({ controller, title, eyebrow, description
           {description && <p className="dfp-description">{description}</p>}
         </div>
 
-        {topActions.length > 0 && (
-          <div className="dfp-actions">
-            {visibleActions.map((a) => (
-              <ActionButton key={a.key} action={a} disabled={controller.submitting} />
-            ))}
-            {overflowActions.length > 0 && (
-              <div className="dfp-more-wrap" ref={moreRef}>
-                <button
-                  type="button"
-                  className="dfp-btn"
-                  onClick={() => setMoreOpen((o) => !o)}
-                  aria-expanded={moreOpen}
-                >
-                  <i className="fa fa-ellipsis-h"></i>
-                  <span>More</span>
-                </button>
-                {moreOpen && (
-                  <div className="dfp-more-panel">
-                    {overflowActions.map((a) => (
-                      <button
-                        key={a.key}
-                        type="button"
-                        className={`dfp-more-item ${btnClass(a.variant)} ${a.colorClass || ''}`.trim()}
-                        disabled={controller.submitting}
-                        onClick={() => {
-                          setMoreOpen(false);
-                          a.onClick();
-                        }}
-                      >
-                        {a.icon && <i className={`fa fa-${a.icon}`}></i>}
-                        <span>{a.label}</span>
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-        )}
+        {topActions.length > 0 && <ActionsRow actions={topActions} disabled={controller.submitting} />}
       </div>
 
       {/* ── Body ── */}

@@ -3,7 +3,7 @@
 import { createContext, useCallback, useContext, useEffect, useId, useMemo, useRef, useState } from "react";
 import gridRegistry from './gridRegistry';
 import Link from "next/link";
-import { Users, ArrowUp, ArrowDown, ArrowRight, ArrowUpRight, Check } from "lucide-react";
+import { Users, ArrowUp, ArrowDown, ArrowRight, ArrowUpRight, Check, CalendarDays } from "lucide-react";
 import { getGridPrefs, replayGrids, useGridPrefs } from "../../moduleControl/UiControl/SmartGridClean";
 import mosyTheme from "../../../appConfigs/mosyTheme";
 import "./origin-dashboard.css";
@@ -240,7 +240,8 @@ function FilterBar({ block, options = {}, onApply }) {
           <div className="od-presets">
             {PRESETS.map((p, i) => (
               <button key={p} type="button" onClick={() => choose(p)} style={{ "--b": i }} className={`od-chip ${preset === p ? "active" : ""}`}>
-                {p}
+                <CalendarDays size={15} className="od-chip-ic" aria-hidden="true" />
+                <span>{p}</span>
               </button>
             ))}
           </div>
@@ -255,7 +256,7 @@ function FilterBar({ block, options = {}, onApply }) {
           </label>
           {canTime && (
             <label className="od-check">
-              <input type="checkbox" checked={useTime} onChange={(e) => toggleTime(e.target.checked)} /> Include time
+              <input type="checkbox" checked={useTime} onChange={(e) => toggleTime(e.target.checked)} /> <span><span className="od-check-long">Include </span>time</span>
             </label>
           )}
         </>

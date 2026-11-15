@@ -478,3 +478,43 @@
   .sgcs-h1 { font-size: 24px; }
 }
 @media (prefers-reduced-motion: reduce) { .sgcs-seg button, .sgcs-btn { transition: none; } }
+
+/* ════════════════════════════════════════════════════════════════
+   Mobile polish (phones) — smaller type, tighter cells, slimmer controls.
+   Placed last so it wins over the earlier ≤767px block. Desktop untouched.
+   ════════════════════════════════════════════════════════════════ */
+@media (max-width: 767px) {
+  .sgc-root { font-size: 12.5px; }
+  .sgc-header { padding: 2px 0 10px; gap: 8px; }
+  .sgc-title { font-size: 20px; }
+  .sgc-description { font-size: 12.5px; line-height: 1.35; margin-top: 3px; }
+  .sgc-header-actions { gap: 8px; }
+  .sgc-btn { height: 34px; padding: 0 10px; gap: 6px; font-size: 12.5px; border-radius: 9px; }
+  .sgc-btn-ic { font-size: 13px; }
+  .sgc-toolbar { padding: 10px 0; gap: 6px; }
+  .sgc-search { height: 36px; border-radius: 9px; }
+  .sgc-search-input { font-size: 12.5px; padding-left: 34px; }
+  .sgc-search-icon { left: 11px; font-size: 13px; }
+  .sgc-search-go { width: 26px; height: 26px; }
+  .sgc-table { min-width: 560px; }
+  .sgc-table thead th { padding: 8px 10px; font-size: 10px; letter-spacing: .05em; }
+  .sgc-table tbody td { padding: 8px 10px; font-size: 12.5px; }
+  .sgc-cell-sub { font-size: 11px; }
+  .sgc-tfoot td { padding: 8px 10px; }
+  .sgc-footer { padding: 10px 12px; }
+  .sgc-page { min-width: 32px; height: 32px; font-size: 12.5px; }
+}
+
+/* phones: the "More Filters" button is just the filter icon (label stays in its tooltip / aria-label) */
+@media (max-width: 767px) {
+  .sgc-btn-more { padding: 0 11px; }
+  .sgc-btn-more > span, .sgc-btn-more .sgc-caret { display: none; }
+  .sgc-menu-right { right: 0; max-width: calc(100vw - 24px); }
+}
+
+/* phone auto-fit row: one line only; a hidden twin of the buttons is measured to decide how many fit */
+@media (max-width: 767px) {
+  .sgc-fit { position: relative; flex: 1 1 0; display: flex; align-items: center; gap: 6px; min-width: 0; }
+  .sgc-fit-measure { position: absolute; left: 0; top: 0; height: 0; overflow: hidden; visibility: hidden; pointer-events: none; display: flex; gap: 6px; white-space: nowrap; }
+  .sgc-fit .sgc-btn-more { margin-left: auto; }
+}

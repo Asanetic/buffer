@@ -1,5 +1,5 @@
 'use client';
-import { useMemo, useRef, useState, useEffect, useSyncExternalStore, Fragment } from 'react';
+import { useMemo, useRef, useState, useEffect, useLayoutEffect, useSyncExternalStore, Fragment } from 'react';
 import { useEntityGridController } from '../dataControl/useEntityGridController';
 import EntityRowOptions from './Entityrowoptions';
 import mosyThemeConfigs from '../../../appConfigs/mosyTheme';
@@ -332,6 +332,20 @@ function splitDateTime(raw) {
 }
 
 // ── actions ─────────────────────────────────────────────────────
+// true on phone-width screens (re-renders when the viewport crosses the breakpoint; false on the server)
+function useIsPhone(query = '(max-width: 767px)') {
+  const [phone, setPhone] = useState(false);
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.matchMedia) return undefined;
+    const mq = window.matchMedia(query);
+    const on = () => setPhone(mq.matches);
+    on();
+    mq.addEventListener?.('change', on);
+    return () => mq.removeEventListener?.('change', on);
+  }, [query]);
+  return phone;
+}
+
 function useOutsideClose(open, setOpen) {
   const ref = useRef(null);
   useEffect(() => {
@@ -343,30 +357,22 @@ function useOutsideClose(open, setOpen) {
   return ref;
 }
 
-function MenuButton({ label, icon, items, align = 'left' }) {
+import PopoverMenuList from './PopoverMenuList';
+
+function MenuButton({ label, icon, items, align = 'left', className = '' }) {
   const [open, setOpen] = useState(false);
   const ref = useOutsideClose(open, setOpen);
   if (!items.length) return null;
   return (
     <div className="sgc-menu-wrap" ref={ref}>
-      <button type="button" className="sgc-btn" onClick={() => setOpen((o) => !o)} aria-expanded={open}>
+      <button type="button" className={`sgc-btn ${className}`.trim()} onClick={() => setOpen((o) => !o)} aria-expanded={open} title={label} aria-label={label}>
         {icon && <i className={`fa fa-${icon} sgc-btn-ic`}></i>}
         <span>{label}</span>
         <i className="fa fa-angle-down sgc-caret"></i>
       </button>
       {open && (
-        <div className={`sgc-menu sgc-menu-${align}`}>
-          {items.map((it) => (
-            <button
-              key={it.key}
-              type="button"
-              className={`sgc-menu-item ${it.colorClass || ''}`.trim()}
-              onClick={() => { setOpen(false); it.onClick(); }}
-            >
-              {it.icon && <i className={`fa fa-${it.icon}`}></i>}
-              <span>{it.label}</span>
-            </button>
-          ))}
+        <div className={`sgc-menu sgm-panel sgc-menu-${align}`}>
+          <PopoverMenuList items={items} onPick={(it) => { setOpen(false); it.onClick(); }} />
         </div>
       )}
     </div>
@@ -376,8 +382,61 @@ function MenuButton({ label, icon, items, align = 'left' }) {
 const isSolid = (a) => a.primary === true || a.variant === 'primary' || a.variant === 'dark';
 const dangerCls = (a) => (String(a.variant || '').includes('danger') ? 'sgc-btn-danger' : '');
 
-function ActionGroup({ actions, max, moreLabel = 'More', solidFirst = false, align = 'left' }) {
+// Phones: shows as many buttons as fit on ONE line (1, 3, 6... whatever the width allows); the rest go behind the filter icon.
+// A hidden copy of every button is measured, then the visible row is trimmed until buttons + the icon fit the available width.
+function FitActions({ actions, moreLabel, align }) {
+  const wrapRef = useRef(null);
+  const measureRef = useRef(null);
+  const [count, setCount] = useState(actions.length);
+  const sig = actions.map((a) => `${a.key}:${a.label}`).join('|');
+
+  useLayoutEffect(() => {
+    const wrap = wrapRef.current;
+    const meas = measureRef.current;
+    if (!wrap || !meas) return undefined;
+    const GAP = 6;
+    const fit = () => {
+      const avail = wrap.clientWidth;
+      const w = [...meas.children].map((el) => el.offsetWidth);
+      const moreW = w.pop() || 0;
+      const total = w.reduce((a, b) => a + b, 0) + GAP * Math.max(0, w.length - 1);
+      if (!avail || total <= avail) return setCount(w.length);
+      let used = 0, k = 0;
+      for (let i = 0; i < w.length; i += 1) {
+        used += w[i] + GAP;
+        if (used + moreW <= avail) k = i + 1; else break;
+      }
+      setCount(k);
+    };
+    fit();
+    const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(fit) : null;
+    ro?.observe(wrap);
+    window.addEventListener('resize', fit);
+    return () => { ro?.disconnect(); window.removeEventListener('resize', fit); };
+  }, [sig]);
+
+  const btn = (a, i) => (
+    <button key={a.key} type="button" className={`sgc-btn ${dangerCls(a)} ${a.colorClass || ''}`.trim()} onClick={a._run} style={{ '--b': i }}>
+      {a.icon && <i className={`fa fa-${a.icon} sgc-btn-ic`}></i>}
+      <span>{a.label}</span>
+    </button>
+  );
+  return (
+    <div className="sgc-fit" ref={wrapRef}>
+      {actions.slice(0, count).map(btn)}
+      <MenuButton label={moreLabel} icon="ellipsis-h" className="sgc-btn-more" align={align} items={actions.slice(count).map((a) => ({ ...a, onClick: a._run }))} />
+      <div className="sgc-fit-measure" ref={measureRef} aria-hidden="true">
+        {actions.map(btn)}
+        <span className="sgc-btn sgc-btn-more"><i className="fa fa-ellipsis-h sgc-btn-ic"></i></span>
+      </div>
+    </div>
+  );
+}
+
+function ActionGroup({ actions, max, moreLabel = 'More', solidFirst = false, align = 'left', fit = false }) {
+  const phone = useIsPhone();
   if (!actions.length) return null;
+  if (phone && fit) return <FitActions actions={actions} moreLabel={moreLabel} align={align} />;
   const visible = actions.slice(0, max);
   const overflow = actions.slice(max);
   const solidKey = actions.find(isSolid)?.key ?? (solidFirst ? actions[0].key : null);
@@ -398,6 +457,7 @@ function ActionGroup({ actions, max, moreLabel = 'More', solidFirst = false, ali
       <MenuButton
         label={moreLabel}
         icon="filter"
+        className="sgc-btn-more"
         align={align}
         items={overflow.map((a) => ({ ...a, onClick: a._run }))}
       />
@@ -823,7 +883,7 @@ export default function SmartGridClean({
           </button>
         )}
 
-        <ActionGroup actions={toolbarActions} max={maxToolbarActions} moreLabel={toolbarMoreLabel} align="right" />
+        <ActionGroup actions={toolbarActions} max={maxToolbarActions} moreLabel={toolbarMoreLabel} align="right" fit />
 
       </div>
 

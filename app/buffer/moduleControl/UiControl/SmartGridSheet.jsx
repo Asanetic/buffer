@@ -18,6 +18,7 @@ import { mosySnackWidgetManager } from '../../../MosyUtils/MosySnackWidget';
 import { mosyFormatDateOnly, mosyFormatDateTime } from '../../../MosyUtils/hiveUtils';
 import { mediaHref } from './FileThumb';
 import './ExcelSheetGrid.css';
+import PopoverMenuList from './PopoverMenuList';
 import './SheetFileCells.css'; // file / image cell styles (thumbnail, drop highlight, open/remove buttons)
 
 // ════════════════════════════════════════════════════════════════
@@ -248,10 +249,8 @@ function SheetMore({ items }) {
         <i className="fa fa-ellipsis-h"></i><span>More</span>
       </button>
       {open && (
-        <div className="sgx-more-panel">
-          {items.map((it) => (
-            <SheetButton key={it.key} inMenu item={{ ...it, onClick: () => { setOpen(false); it.onClick(); } }} />
-          ))}
+        <div className="sgx-more-panel sgm-panel">
+          <PopoverMenuList items={items} onPick={(it) => { setOpen(false); it.onClick(); }} />
         </div>
       )}
     </div>
